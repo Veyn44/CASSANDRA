@@ -28,4 +28,4 @@ if(p.edge){if(hullOverlap<1||hullOverlap>=w*h)return{valid:false,message:"DRIVE 
 else if(hullOverlap!==w*h)return{valid:false,message:"HULL REQUIRED · ALL MODULE TILES MUST BE ON HULL"};
 return{valid:true,message:p.name+" READY",w,h};
 }
-export function placePrefab(s,id,x,y){const check=validatePrefabPlacement(s,id,x,y);if(!check.valid)return{message:check.message};const idValue="module-"+s.nextObjectId++;s.map.objects[idValue]={id:idValue,type:id,x,y,w:check.w,h:check.h,rotation:s.rotation};return{message:PREFABS.find(p=>p.id===id).name+" PLACED",objectId:idValue};}
+export function placePrefab(s,id,x,y){const check=validatePrefabPlacement(s,id,x,y);if(!check.valid)return{message:check.message};const idValue="module-"+s.nextObjectId++;s.map.objects[idValue]={id:idValue,type:id,x,y,w:check.w,h:check.h,rotation:s.rotation,built:false};return{message:PREFABS.find(p=>p.id===id).name+" BLUEPRINT PLACED · 1 TITANIUM · 1 AP",objectId:idValue};}
