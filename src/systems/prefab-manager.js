@@ -1,0 +1,17 @@
+export const PREFABS=[
+{id:"command",name:"Command & Navigation Unit",w:2,h:1,description:"Navigation, current star system, ship status and mission overview.",function:"Command interface · future system"},
+{id:"reactor",name:"Resonance Fusion Core",w:2,h:2,description:"Energy generation and artificial gravity.",function:"Power and artificial gravity"},
+{id:"engine",name:"Resonance Drive",w:3,h:1,description:"External propulsion module. At least one tile must overlap the connected hull; remaining section extends beyond the ship and can be damaged.",function:"Interstellar propulsion · exposed to external damage",edge:true},
+{id:"hydroponics",name:"Hydroponics",w:3,h:1,description:"Compact food production module.",function:"Food production"},
+{id:"water-tank",name:"Water Tank",w:1,h:1,description:"Stores recovered water and ice before electrolysis.",function:"Water storage"},
+{id:"electrolyzer",name:"Electrolyzer",w:1,h:1,description:"Splits water into oxygen for life support and hydrogen for the drive.",function:"Water processing"},
+{id:"research",name:"Research Workbench",w:2,h:1,description:"Sample analysis, materials research and experiments.",function:"Research and analysis"},
+{id:"bunk",name:"Personal Bunk",w:2,h:1,description:"Crew sleeping and recovery space.",function:"Rest and recovery"},
+{id:"suit-rack",name:"Powered Suit Dock",w:1,h:1,description:"The researcher docks into the powered suit. It attaches around the pawn; it is not a changing room.",function:"Suit-up / suit removal"},
+{id:"storage",name:"Material Storage",w:2,h:1,description:"Shared material storage. Each unit has 100 capacity for non-water materials.",function:"Shared material inventory · capacity 100"},
+{id:"door-wide",name:"Wide Bulkhead Door",w:2,h:1,description:"Two-tile sliding door for ship compartments and the airlock.",function:"Passage / pressure boundary"},
+{id:"door-single",name:"Single Bulkhead Door",w:1,h:1,description:"Compact single-tile sliding door.",function:"Passage / pressure boundary"}
+];
+export function rotateTool(s,step){s.rotation=(s.rotation+step+4)%4;}
+export function prefabSize(p,rotation){return rotation%2?{w:p.h,h:p.w}:{w:p.w,h:p.h};}
+export function placePrefab(s,id,x,y){const p=PREFABS.find(v=>v.id===id);if(!p)return{message:"UNKNOWN MODULE"};const {w,h}=prefabSize(p,s.rotation),occupied=new Set();let hullOverlap=0;for(let yy=0;yy<h;yy++)for(let xx=0;xx<w;xx++){const tx=x+xx,ty=y+yy,k=tx+","+ty;if(tx<0||ty<0||tx>=128||ty>=128)return{message:"OUT OF MAP"};const tile=s.map.tiles[k];if(tile?.wall||Object.values(s.map.objects).some(o=>tx>=o.x&&ty>=o.y&&tx<o.x+o.w&&ty<o.y+o.h))return{message:"TILE BLOCKED"};if(tile?.hull)hullOverlap++;else if(!p.edge)return{message:"HULL REQUIRED · MODULE MUST BE PLACED ON HULL"};occupied.add(k);}if(p.edge){if(hullOverlap<1||hullOverlap>=w*h)return{message:"DRIVE MUST OVERLAP HULL AND EXTEND OUTSIDE"};}else if(hullOverlap!==w*h)return{message:"HULL REQUIRED · ALL MODULE TILES MUST BE ON HULL"};const idValue="module-"+s.nextObjectId++;s.map.objects[idValue]={id:idValue,type:p.id,x,y,w,h,rotation:s.rotation};return{message:p.name+" PLACED",objectId:idValue};}
