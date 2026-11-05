@@ -1,7 +1,1 @@
-export function updateSidebar(state) {
-  document.querySelector("#turn-label").textContent=`DAY ${String(state.day).padStart(2,"0")} · TURN ${String(state.turn).padStart(2,"0")}`;
-  document.querySelector("#op-value").textContent=`${state.pawn.op} / ${state.pawn.maxOP}`;
-  document.querySelector("#op-bar").style.width=`${(state.pawn.op/state.pawn.maxOP)*100}%`;
-  document.querySelector("#selection-name").textContent=state.pawn.name;
-  document.querySelector("#selection-coords").textContent=`POSITION · X ${state.pawn.x} / Y ${state.pawn.y}`;
-}
+export function updateSidebar(s){document.querySelector("#turn-label").textContent=`DAY ${String(s.day).padStart(2,"0")} · TURN ${String(s.turn).padStart(2,"0")}`;document.querySelector("#selection-panel").innerHTML=s.pawn.selected?`<h3>PAWN STATUS</h3><h2>RESEARCHER</h2><small>HUMAN · LEVEL ${String(s.pawn.level).padStart(2,"0")}</small><p>Condition <b>Stable</b></p><p>Health <b>${s.pawn.health}%</b></p><p>Operational points <b>${s.pawn.op} / ${s.pawn.maxOP}</b></p><p>Position <b>${s.pawn.x}, ${s.pawn.y}</b></p>`:'<h3>PAWN STATUS</h3><p>Nothing selected</p>';}
