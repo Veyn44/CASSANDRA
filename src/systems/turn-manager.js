@@ -12,7 +12,7 @@ if(s.pawn.op<2)return{ok:false,message:"NOT ENOUGH AP · 2 AP REQUIRED"};
 if(plan.type==="hull"){if(tile?.hull||!dirs.some(([dx,dy])=>connectedHullSet(s).has(key(x+dx,y+dy))))return{ok:false,message:"HULL PLAN NOT CONNECTED TO SHIP"};}
 else if(plan.type==="wall"&&(!tile?.hull||tile.wall))return{ok:false,message:"WALL REQUIRES COMPLETED HULL"};
 else if(plan.type==="demolishWall"&&(!tile?.hull||!tile.wall))return{ok:false,message:"NO WALL TO DEMOLISH"};
-else if(plan.type==="demolishHull"&&(!tile?.hull||tile.wall))return{ok:false,message:"REMOVE WALL BEFORE HULL"};
+else if(plan.type==="demolishHull"&&(!tile?.hull||tile.wall||Object.values(s.map.objects).some(o=>x>=o.x&&y>=o.y&&x<o.x+o.w&&y<o.y+o.h)))return{ok:false,message:"REMOVE WALL OR MODULE BEFORE HULL"};
 const cost=plan.type==="hull"||plan.type==="wall";if(cost&&!s.devMode&&s.resources.titanium<1)return{ok:false,message:"INSUFFICIENT TITANIUM"};
 const spots=workPositions(s,x,y,plan.type);let chosen=null,path=null;for(const spot of spots){const candidate=findPath(s,spot);if(candidate&&(!path||candidate.length<path.length)){chosen=spot;path=candidate;}}
 if(!chosen)return{ok:false,message:"NO ACCESSIBLE WORKING POSITION"};
@@ -25,4 +25,4 @@ else if(plan.type==="demolishWall")tile.wall=false;
 else if(plan.type==="demolishHull")delete s.map.tiles[k];
 s.pawn.op-=2;delete s.map.plans[k];return{ok:true,message:"ACTION COMPLETE · "+plan.type.toUpperCase()+" · 2 AP SPENT"};
 }
-export function endTurn(s){s.turn++;if((s.turn-1)%2===0)s.day++;s.pawn.op=s.pawn.maxOP;return{message:"TURN ADVANCED · SHIP MAINTENANCE UPDATED · OPERATIONAL POINTS RESTORED"};}
+export function endTurn(s){s.turn++;if((s.turn-1)%2===0)s.day++;s.pawn.op=s.pawn.maxOP;return{message:"TURN ADVANCED · OPERATIONAL POINTS RESTORED"};}
