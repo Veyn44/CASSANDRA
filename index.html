@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1018">
+  <title>CASSANDRA — Prototype</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">C</span><div><strong>CASSANDRA</strong><small>RESEARCH VESSEL · PROTOTYPE</small></div></div>
+      <div class="turn-readout"><span>SHIP TIME</span><strong id="turn-label">DAY 01 · TURN 01</strong></div>
+      <div class="top-status"><span class="status-dot"></span> SYSTEMS NOMINAL</div>
+    </header>
+    <section class="game-layout">
+      <div class="viewport-wrap">
+        <canvas id="game-canvas" aria-label="Ship map"></canvas>
+        <div class="map-hint">LMB: select / move · WASD: move · wheel: zoom · RMB/MMB drag: pan</div>
+        <div class="map-coords" id="coords-label">GRID 64 × 64</div>
+      </div>
+      <aside class="sidebar">
+        <section class="panel">
+          <div class="panel-kicker">CREW MANIFEST</div>
+          <div class="pawn-card">
+            <div class="pawn-avatar">■</div>
+            <div><strong>Researcher</strong><small>HUMAN · LEVEL 01</small></div>
+            <span class="selected-tag">ACTIVE</span>
+          </div>
+          <div class="stat-row"><span>Operational points</span><strong id="op-value">15 / 15</strong></div>
+          <div class="op-track"><div id="op-bar"></div></div>
+          <div class="stat-row muted"><span>Condition</span><strong>Stable</strong></div>
+        </section>
+        <section class="panel">
+          <div class="panel-kicker">SELECTED PAWN</div>
+          <p class="selection-name" id="selection-name">Researcher</p>
+          <p class="selection-coords" id="selection-coords">POSITION · X 32 / Y 32</p>
+          <p class="panel-note">Select the researcher or a nearby tile. Movement is free during the planning phase.</p>
+        </section>
+        <section class="panel">
+          <div class="panel-kicker">VESSEL STATUS</div>
+          <div class="stat-row"><span>Hull integrity</span><strong>100%</strong></div>
+          <div class="stat-row"><span>Oxygen reserve</span><strong>100%</strong></div>
+          <div class="stat-row"><span>Power reserve</span><strong>100%</strong></div>
+        </section>
+        <section class="panel turn-panel">
+          <div class="panel-kicker">TIME CONTROL</div>
+          <p class="panel-note">No time passes while planning. End the turn to advance ship time and resolve scheduled systems.</p>
+          <button id="next-turn" class="primary-button">NEXT TURN <span>→</span></button>
+          <small class="turn-duration">ONE TURN · PROTOTYPE: 8 HOURS</small>
+        </section>
+        <footer class="sidebar-footer">CASSANDRA // BUILD 0001</footer>
+      </aside>
+    </section>
+  </main>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
