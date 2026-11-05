@@ -1,18 +1,1 @@
-// Route all future resource checks and costs through this module.
-// Developer Mode bypasses every cost, regardless of the resource type.
-export function getResourceAmount(state, resourceId) {
-  return state.devMode ? Infinity : (state.resources[resourceId] ?? 0);
-}
-export function hasResource(state, resourceId, amount = 1) {
-  return state.devMode || getResourceAmount(state, resourceId) >= amount;
-}
-export function consumeResource(state, resourceId, amount = 1) {
-  if (state.devMode) return true;
-  if (!hasResource(state, resourceId, amount)) return false;
-  state.resources[resourceId] -= amount;
-  return true;
-}
-export function addResource(state, resourceId, amount) {
-  state.resources[resourceId] = (state.resources[resourceId] ?? 0) + amount;
-  return state.resources[resourceId];
-}
+export function getResourceAmount(s,id){return s.devMode?Infinity:(s.resources[id]??0);}export function hasResource(s,id,amount=1){return s.devMode||getResourceAmount(s,id)>=amount;}export function consumeResource(s,id,amount=1){if(s.devMode)return true;if(!hasResource(s,id,amount))return false;s.resources[id]-=amount;return true;}export function addResource(s,id,amount){s.resources[id]=(s.resources[id]??0)+amount;return s.resources[id];}
