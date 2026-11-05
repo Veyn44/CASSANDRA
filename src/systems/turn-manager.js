@@ -4,9 +4,10 @@ export function createInitialState() {
     day: 1,
     devMode: false,
     resources: {},
-    map: { width: 64, height: 64, tileSize: 32 },
-    pawn: { id: "researcher-01", name: "Researcher", x: 32, y: 32, level: 1, maxOP: 15, op: 15, selected: true },
-    camera: { x: 0, y: 0, zoom: 1 },
+    activeTool: "floor",
+    map: { width: 128, height: 128, tileSize: 32, gridVisible: true, tiles: {} },
+    pawn: { id: "researcher-01", name: "Researcher", x: 64, y: 64, level: 1, maxOP: 15, op: 15, selected: true },
+    camera: { x: 64, y: 64, zoom: 1 },
     selection: "researcher-01"
   };
 }
