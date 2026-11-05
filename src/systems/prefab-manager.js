@@ -3,7 +3,7 @@ export const PREFABS=[
 {id:"reactor",name:"Resonance Fusion Core",w:2,h:2,description:"Energy generation and artificial gravity.",function:"Power and artificial gravity"},
 {id:"engine",name:"Resonance Drive",w:3,h:1,description:"External propulsion module. At least one tile must overlap the connected hull; remaining section extends beyond the ship and can be damaged.",function:"Interstellar propulsion · exposed to external damage",edge:true},
 {id:"hydroponics",name:"Hydroponics",w:3,h:1,description:"Compact food production module.",function:"Food production"},
-{id:"water-tank",name:"Water Tank",w:1,h:1,description:"Stores recovered water and ice before electrolysis.",function:"Water storage"},
+{id:"water-tank",name:"Water Tank",w:1,h:1,description:"Stores recovered water and ice. Water and ice are routed here before electrolysis.",function:"Water storage"},\n{id:"hydrogen-tank",name:"Hydrogen Tank",w:1,h:1,description:"Stores hydrogen produced by electrolysis. Hydrogen is consumed for interstellar jumps and may have a small passive standby drain.",function:"Hydrogen fuel storage"},
 {id:"electrolyzer",name:"Electrolyzer",w:1,h:1,description:"Splits water into oxygen for life support and hydrogen for the drive.",function:"Water processing"},
 {id:"research",name:"Research Workbench",w:2,h:1,description:"Sample analysis, materials research and experiments.",function:"Research and analysis"},
 {id:"bunk",name:"Personal Bunk",w:2,h:1,description:"Crew sleeping and recovery space.",function:"Rest and recovery"},
