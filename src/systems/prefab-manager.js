@@ -15,4 +15,17 @@ export const PREFABS=[
 ];
 export function rotateTool(s,step){s.rotation=(s.rotation+step+4)%4;}
 export function prefabSize(p,rotation){return rotation%2?{w:p.h,h:p.w}:{w:p.w,h:p.h};}
-export function placePrefab(s,id,x,y){const p=PREFABS.find(v=>v.id===id);if(!p)return{message:"UNKNOWN MODULE"};const {w,h}=prefabSize(p,s.rotation),occupied=new Set();let hullOverlap=0;for(let yy=0;yy<h;yy++)for(let xx=0;xx<w;xx++){const tx=x+xx,ty=y+yy,k=tx+","+ty;if(tx<0||ty<0||tx>=128||ty>=128)return{message:"OUT OF MAP"};const tile=s.map.tiles[k];if(tile?.wall||Object.values(s.map.objects).some(o=>tx>=o.x&&ty>=o.y&&tx<o.x+o.w&&ty<o.y+o.h))return{message:"TILE BLOCKED"};if(tile?.hull)hullOverlap++;else if(!p.edge)return{message:"HULL REQUIRED · MODULE MUST BE PLACED ON HULL"};occupied.add(k);}if(p.edge){if(hullOverlap<1||hullOverlap>=w*h)return{message:"DRIVE MUST OVERLAP HULL AND EXTEND OUTSIDE"};}else if(hullOverlap!==w*h)return{message:"HULL REQUIRED · ALL MODULE TILES MUST BE ON HULL"};const idValue="module-"+s.nextObjectId++;s.map.objects[idValue]={id:idValue,type:p.id,x,y,w,h,rotation:s.rotation};return{message:p.name+" PLACED",objectId:idValue};}
+export function validatePrefabPlacement(s,id,x,y,rotation=s.rotation){
+const p=PREFABS.find(v=>v.id===id);if(!p)return{valid:false,message:"UNKNOWN MODULE"};
+const {w,h}=prefabSize(p,rotation);let hullOverlap=0;
+for(let yy=0;yy<h;yy++)for(let xx=0;xx<w;xx++){
+const tx=x+xx,ty=y+yy,k=tx+","+ty;if(tx<0||ty<0||tx>=128||ty>=128)return{valid:false,message:"OUT OF MAP"};
+const tile=s.map.tiles[k];
+if(tile?.wall||Object.values(s.map.objects).some(o=>tx>=o.x&&ty>=o.y&&tx<o.x+o.w&&ty<o.y+o.h))return{valid:false,message:"TILE BLOCKED"};
+if(tile?.hull)hullOverlap++;else if(!p.edge)return{valid:false,message:"HULL REQUIRED · MODULE MUST BE PLACED ON HULL"};
+}
+if(p.edge){if(hullOverlap<1||hullOverlap>=w*h)return{valid:false,message:"DRIVE MUST OVERLAP HULL AND EXTEND OUTSIDE"};}
+else if(hullOverlap!==w*h)return{valid:false,message:"HULL REQUIRED · ALL MODULE TILES MUST BE ON HULL"};
+return{valid:true,message:p.name+" READY",w,h};
+}
+export function placePrefab(s,id,x,y){const check=validatePrefabPlacement(s,id,x,y);if(!check.valid)return{message:check.message};const idValue="module-"+s.nextObjectId++;s.map.objects[idValue]={id:idValue,type:id,x,y,w:check.w,h:check.h,rotation:s.rotation};return{message:PREFABS.find(p=>p.id===id).name+" PLACED",objectId:idValue};}
