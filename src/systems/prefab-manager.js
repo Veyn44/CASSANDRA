@@ -7,28 +7,53 @@ export const getBuildable = id => getModule(id) ?? getStructure(id) ?? getFurnit
 export function rotateTool(s, step) { s.rotation = (s.rotation + step + 4) % 4; }
 export function prefabSize(item, rotation) { return rotation % 2 ? { w: item.h, h: item.w } : { w: item.w, h: item.h }; }
 
+function rectanglesTouch(a, b) {
+  const horizontalOverlap = a.x < b.x + b.w && a.x + a.w > b.x;
+  const verticalOverlap = a.y < b.y + b.h && a.y + a.h > b.y;
+  return (horizontalOverlap && (a.y + a.h === b.y || b.y + b.h === a.y)) ||
+    (verticalOverlap && (a.x + a.w === b.x || b.x + b.w === a.x));
+}
+
+function findDoorWallAttachment(tiles, x, y, w, h) {
+  const attached = new Set();
+  for (let yy = y; yy < y + h; yy++) for (let xx = x; xx < x + w; xx++) {
+    if (tiles[xx + "," + yy]?.wall) attached.add(xx + "," + yy);
+    for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1]]) {
+      const wx = xx + dx, wy = yy + dy;
+      if (tiles[wx + "," + wy]?.wall) attached.add(wx + "," + wy);
+    }
+  }
+  return [...attached].map(value => {
+    const [wx, wy] = value.split(",").map(Number);
+    return { x: wx, y: wy };
+  });
+}
+
 export function validatePrefabPlacement(s, id, x, y, rotation = s.rotation) {
   const item = getBuildable(id);
   if (!item) return { valid: false, message: "UNKNOWN BUILD ITEM" };
   const { w, h } = prefabSize(item, rotation);
-  let wallOverlap = 0;
   const objects = Object.values(s.map.objects);
   for (let yy = 0; yy < h; yy++) for (let xx = 0; xx < w; xx++) {
     const tx = x + xx, ty = y + yy, k = tx + "," + ty;
     if (tx < 0 || ty < 0 || tx >= 128 || ty >= s.map.height) return { valid: false, message: tx >= 128 ? "SHIP CONSTRUCTION IS LIMITED TO THE LEFT SECTOR" : "OUT OF MAP" };
     const tile = s.map.tiles[k];
     if (objects.some(o => tx >= o.x && ty >= o.y && tx < o.x + o.w && ty < o.y + o.h)) return { valid: false, message: "TILE BLOCKED" };
-    if (tile?.wall) wallOverlap++;
     if (item.placement === "wall-opening") {
-      if (!tile?.hull || !tile?.wall) return { valid: false, message: "DOORS MUST REPLACE AN EXISTING WALL" };
+      if (!tile?.hull) return { valid: false, message: "DOORS REQUIRE A HULL TILE" };
     } else if (item.placement === "external-frame" || item.placement === "external") {
       if (tile?.hull || tile?.wall) return { valid: false, message: "EXTERNAL EQUIPMENT MUST BE OUTSIDE THE HULL" };
-      const adjacentHull = [[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy]) => (s.map.tiles[(tx+dx)+","+(ty+dy)]?.hull && !s.map.tiles[(tx+dx)+","+(ty+dy)]?.wall));
+      const adjacentHull = [[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy]) => s.map.tiles[(tx+dx)+","+(ty+dy)]?.hull);
       if (item.placement === "external-frame" && !adjacentHull) return { valid: false, message: "EXTERNAL FRAME MUST TOUCH THE HULL" };
-    } else if (item.placement === "wall-mounted") { if (!tile?.hull || !tile?.wall) return { valid: false, message: "WALL LIGHT REQUIRES A WALL TILE" }; } else if (!tile?.hull || tile?.wall) return { valid: false, message: "HULL REQUIRED · PLACE ON AN OPEN HULL TILE" };
+    } else if (item.placement === "wall-mounted") {
+      if (!tile?.hull || !tile?.wall) return { valid: false, message: "WALL LIGHT REQUIRES A WALL TILE" };
+    } else if (!tile?.hull || tile?.wall) return { valid: false, message: "HULL REQUIRED · PLACE ON AN OPEN HULL TILE" };
   }
-  if (item.placement === "wall-opening" && wallOverlap !== w * h) return { valid: false, message: "DOORS MUST REPLACE AN EXISTING WALL" };
-  if (item.placement === "external" && !objects.some(o => o.type === "STR0001" && o.x >= x - 1 && o.x <= x + w && o.y >= y - 1 && o.y <= y + h && !(o.x >= x && o.x < x + w && o.y >= y && o.y < y + h))) return { valid: false, message: "SOLAR PANEL REQUIRES AN ADJACENT EXTERNAL FRAME" };
+  if (item.placement === "external") {
+    const panel = { x, y, w, h };
+    const hasAdjacentFrame = objects.some(o => o.type === "STR0001" && rectanglesTouch(panel, o));
+    if (!hasAdjacentFrame) return { valid: false, message: "SOLAR PANEL REQUIRES AN ADJACENT EXTERNAL FRAME" };
+  }
   return { valid: true, message: item.name + " READY", w, h };
 }
 
@@ -36,6 +61,6 @@ export function placePrefab(s, id, x, y) {
   const item = getBuildable(id), check = validatePrefabPlacement(s, id, x, y);
   if (!check.valid) return { message: check.message };
   const idValue = "build-" + s.nextObjectId++;
-  s.map.objects[idValue] = { id: idValue, type: item.id, family: item.id.slice(0, 3), x, y, w: check.w, h: check.h, rotation: s.rotation, built: false };
+  s.map.objects[idValue] = { id: idValue, type: item.id, family: item.id.slice(0, 3), x, y, w: check.w, h: check.h, rotation: s.rotation, built: false, ...(item.placement === "wall-opening" ? { wallAttachment: findDoorWallAttachment(s.map.tiles, x, y, check.w, check.h) } : {}) };
   return { message: item.name + " BLUEPRINT PLACED · 1 TITANIUM · 1 AP", objectId: idValue };
 }
