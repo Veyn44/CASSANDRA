@@ -1,4 +1,4 @@
-const base = { stats: {}, attributes: {}, requirements: {}, systems: {} };
+const base = { stats: {}, attributes: {}, requirements: {}, systems: {}, defaultMaterialFamily: "titanium" };
 
 export const STRUCTURES = [
   { ...base, id: "STR0001", legacyId: "external-frame", name: "External Frame", category: "structure", subcategory: "external-support", type: "structure", w: 1, h: 1, description: "Lightweight external mounting structure. Not a floor or wall.", function: "External equipment support", placement: "external-frame" },
