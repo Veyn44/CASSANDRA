@@ -25,10 +25,10 @@ export function validatePrefabPlacement(s, id, x, y, rotation = s.rotation) {
       if (tile?.hull || tile?.wall) return { valid: false, message: "EXTERNAL EQUIPMENT MUST BE OUTSIDE THE HULL" };
       const adjacentHull = [[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy]) => s.map.tiles[(tx+dx)+","+(ty+dy)]?.hull);
       if (item.placement === "external-frame" && !adjacentHull) return { valid: false, message: "EXTERNAL FRAME MUST TOUCH THE HULL" };
-    } else if (!tile?.hull || tile?.wall) return { valid: false, message: "HULL REQUIRED · PLACE ON AN OPEN HULL TILE" };
+    } else if (item.placement === "wall-mounted") { if (!tile?.hull || !tile?.wall) return { valid: false, message: "WALL LIGHT REQUIRES A WALL TILE" }; } else if (!tile?.hull || tile?.wall) return { valid: false, message: "HULL REQUIRED · PLACE ON AN OPEN HULL TILE" };
   }
   if (item.placement === "wall-opening" && wallOverlap !== w * h) return { valid: false, message: "DOORS MUST REPLACE AN EXISTING WALL" };
-  if (item.placement === "external" && !objects.some(o => o.type === "STR0001" && x >= o.x && y >= o.y && x + w <= o.x + o.w && y + h <= o.y + o.h)) return { valid: false, message: "SOLAR PANEL REQUIRES AN EXTERNAL FRAME" };
+  if (item.placement === "external" && !objects.some(o => o.type === "STR0001" && o.x >= x - 1 && o.x <= x + w && o.y >= y - 1 && o.y <= y + h && !(o.x >= x && o.x < x + w && o.y >= y && o.y < y + h))) return { valid: false, message: "SOLAR PANEL REQUIRES AN ADJACENT EXTERNAL FRAME" };
   return { valid: true, message: item.name + " READY", w, h };
 }
 
