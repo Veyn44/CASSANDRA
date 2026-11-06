@@ -18,16 +18,16 @@ function bodyCellsFitCircle(cells,dx,dy,cx,cy,radius){return cells.every(cell=>M
 function bodyCellsSeparated(cells,placed){const occupied=new Set();for(const body of placed)for(const cell of body.cells)occupied.add(key(cell.x,cell.y));for(const cell of cells){for(let oy=-1;oy<=1;oy++)for(let ox=-1;ox<=1;ox++)if(occupied.has(key(cell.x+ox,cell.y+oy)))return false;}return true;}
 export function generateAsteroidForState(s,params={}){
  const total=Math.max(1,Math.min(8,Math.floor(Number(params.bodyCount)||1))),seed=Number(params.seed)>>>0,anchor=s.map.anchor??{x:192,y:64},majorW=Math.max(3,Math.floor(params.width||70)),majorH=Math.max(3,Math.floor(params.height||28)),rng=seededRandom(seed^0x71A57),cavityTotal=Math.max(0,Math.min(20,Math.floor(params.cavityCount||0))),percent=Math.max(0,Math.min(30,Number(params.cavitySizePercent)||0));
- const major=generateCosmicBody({seed,x:0,y:0,width:majorW,height:majorH,bodyCount:1,cavitySizePercent:percent,cavityCount:Math.min(cavityTotal,20),interior:"mixed",roundness:.82,irregularity:.12});
+ const major=generateCosmicBody({seed,x:0,y:0,width:majorW,height:majorH,bodyCount:1,cavitySizePercent:percent,cavityCount:Math.floor(cavityTotal/total)+(cavityTotal%total>0?1:0),interior:"mixed",roundness:.82,irregularity:.12});
  const majorSolid=major.solidCells.length;if(!majorSolid)throw new Error("MAJOR BODY GENERATION FAILED");
  const radius=Math.min(62,Math.ceil(Math.max(majorW,majorH)*.5*1.25));
  const bodies=[{id:"MAJOR-01",role:"major",width:majorW,height:majorH,cells:major.cells,solidCells:major.solidCells,cavityTileCount:major.cavityTileCount,cavityGroupCount:major.cavityGroupCount,seed}];
  const placed=[{cells:major.cells.map(c=>({...c,x:c.x+anchor.x-Math.floor(majorW/2),y:c.y+anchor.y-Math.floor(majorH/2)}))}];
  const majorDX=anchor.x-Math.floor(majorW/2),majorDY=anchor.y-Math.floor(majorH/2);
  for(let i=0;i<major.cells.length;i++){major.cells[i].x+=majorDX;major.cells[i].y+=majorDY;major.cells[i].bodyId="MAJOR-01";major.cells[i].bodyRole="major";}
- const minorCount=total-1,minorBaseScale=minorCount?Math.min(.72,.72/Math.sqrt(minorCount)):0;
+ const minorCount=total-1,minorBaseScale=minorCount?Math.min(.34,.34/Math.sqrt(minorCount)):0;
  for(let i=0;i<minorCount;i++){
-   const scale=minorBaseScale*(.72+rng()*.28),mw=Math.max(3,Math.floor(majorW*scale)),mh=Math.max(3,Math.floor(majorH*scale));
+   const scale=minorBaseScale*(.55+rng()*.25),mw=Math.max(3,Math.floor(majorW*scale)),mh=Math.max(3,Math.floor(majorH*scale));
    const cavitiesForBody=Math.floor(cavityTotal/total)+(i+1<cavityTotal%total?1:0);
    const generated=generateCosmicBody({seed:(seed+(i+1)*7919)>>>0,x:0,y:0,width:mw,height:mh,bodyCount:1,cavitySizePercent:percent,cavityCount:cavitiesForBody,interior:"mixed",roundness:.82,irregularity:.12});
    const candidates=[];
