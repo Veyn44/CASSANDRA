@@ -8,7 +8,7 @@ export function validatePrefabPlacement(s,id,x,y,rotation=s.rotation){
 const p=getModule(id);if(!p)return{valid:false,message:"UNKNOWN MODULE"};
 const {w,h}=prefabSize(p,rotation);let hullOverlap=0;
 for(let yy=0;yy<h;yy++)for(let xx=0;xx<w;xx++){
-const tx=x+xx,ty=y+yy,k=tx+","+ty;if(tx<0||ty<0||tx>=s.map.width||ty>=s.map.height)return{valid:false,message:"OUT OF MAP"};
+const tx=x+xx,ty=y+yy,k=tx+","+ty;if(tx<0||ty<0||tx>=128||ty>=s.map.height)return{valid:false,message:tx>=128?"SHIP CONSTRUCTION IS LIMITED TO THE LEFT SECTOR":"OUT OF MAP"};
 const tile=s.map.tiles[k];
 if(tile?.wall||Object.values(s.map.objects).some(o=>tx>=o.x&&ty>=o.y&&tx<o.x+o.w&&ty<o.y+o.h))return{valid:false,message:"TILE BLOCKED"};
 if(tile?.hull)hullOverlap++;else if(!p.edge)return{valid:false,message:"HULL REQUIRED · MODULE MUST BE PLACED ON HULL"};
