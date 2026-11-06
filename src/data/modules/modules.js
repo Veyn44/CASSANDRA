@@ -1,10 +1,18 @@
+const base = { stats: {}, attributes: {}, requirements: {}, systems: {} };
+
 export const MODULES = [
-  { id: "MOD0002", legacyId: "resonance-core", name: "Resonance Core (RC)", category: "core", w: 2, h: 2, description: "Central resonance propulsion and energy interface. Exposed to vacuum.", function: "Resonance propulsion · energy interface", asset: "assets/modules/power/MOD0002.png" }
+  { ...base, id: "MOD0002", legacyId: "resonance-core", name: "Resonance Core (RC)", category: "core-systems", subcategory: "resonance", type: "module", w: 2, h: 2, description: "Central resonance propulsion and energy interface. Exposed to vacuum.", function: "Resonance propulsion · energy interface", placement: "hull", asset: "assets/modules/power/MOD0002.png" },
+  { ...base, id: "MOD0003", legacyId: "solar-panel", name: "Solar Panel", category: "power", subcategory: "generation", type: "module", w: 3, h: 2, description: "External emergency photovoltaic power generation.", function: "Solar power generation", placement: "external" },
+  { ...base, id: "MOD0005", legacyId: "ship-computer", name: "Ship Computer", category: "core-systems", subcategory: "control", type: "module", w: 2, h: 2, description: "Central ship data and control interface.", function: "Ship systems control", placement: "hull" },
+  { ...base, id: "MOD0006", legacyId: "sleeping-module", name: "Sleeping Module", category: "crew-medical", subcategory: "crew-quarters", type: "module", w: 2, h: 1, description: "Ordinary sleeping accommodation for the researcher.", function: "Crew rest", placement: "hull" },
+  { ...base, id: "MOD0007", legacyId: "medical-chamber", name: "Medical Chamber", category: "crew-medical", subcategory: "medical", type: "module", w: 3, h: 2, description: "Medical treatment and recovery facility.", function: "Medical care", placement: "hull" },
+  { ...base, id: "MOD0008", legacyId: "eva-suit-chamber", name: "EVA Suit Chamber", category: "crew-medical", subcategory: "eva", type: "module", w: 1, h: 1, description: "Storage and preparation point for the EVA suit.", function: "EVA suit access", placement: "hull" },
+  { ...base, id: "MOD0009", legacyId: "material-tanks", name: "Material Tanks", category: "material-processing", subcategory: "storage", type: "module", w: 4, h: 1, description: "Four basic material storage compartments.", function: "Material storage", placement: "hull" },
+  { ...base, id: "MOD0010", legacyId: "material-separator", name: "Material Separator", category: "material-processing", subcategory: "processing", type: "module", w: 2, h: 1, description: "Classifies mixed incoming material into storage categories.", function: "Material separation", placement: "hull" },
+  { ...base, id: "MOD0011", legacyId: "life-support-panel", name: "Life Support Panel", category: "core-systems", subcategory: "life-support", type: "module", w: 2, h: 1, description: "Life-support system control interface.", function: "Life support control", placement: "hull" },
+  { ...base, id: "MOD0012", legacyId: "battery-storage", name: "Battery Storage", category: "power", subcategory: "storage", type: "module", w: 2, h: 2, description: "High-capacity electrical energy storage.", function: "Electrical energy storage", placement: "hull" }
 ];
 
-export const MODULE_BY_ID = Object.freeze(Object.fromEntries(MODULES.map(module => [module.id, module])));
-export const MODULE_BY_LEGACY_ID = Object.freeze(Object.fromEntries(MODULES.map(module => [module.legacyId, module])));
-
-export function getModule(id) {
-  return MODULE_BY_ID[id] ?? MODULE_BY_LEGACY_ID[id] ?? null;
-}
+export const MODULE_BY_ID = Object.freeze(Object.fromEntries(MODULES.map(item => [item.id, item])));
+export const MODULE_BY_LEGACY_ID = Object.freeze(Object.fromEntries(MODULES.map(item => [item.legacyId, item])));
+export function getModule(id) { return MODULE_BY_ID[id] ?? MODULE_BY_LEGACY_ID[id] ?? null; }
