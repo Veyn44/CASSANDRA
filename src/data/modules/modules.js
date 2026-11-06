@@ -1,7 +1,7 @@
 const base = { stats: {}, attributes: {}, requirements: {}, systems: {} };
 
 export const MODULES = [
-  { ...base, id: "MOD0002", legacyId: "resonance-core", name: "Resonance Core (RC)", category: "core-systems", subcategory: "resonance", type: "module", w: 2, h: 2, description: "Central resonance propulsion and energy interface. Exposed to vacuum.", function: "Resonance propulsion · energy interface", placement: "hull", asset: "assets/modules/power/MOD0002.png" },
+  { ...base, id: "MOD0002", legacyId: "resonance-core", name: "Resonance Core (RC)", tileCapacity: null, category: "core-systems", subcategory: "resonance", type: "module", w: 2, h: 2, description: "Central resonance propulsion and energy interface. Exposed to vacuum.", function: "Resonance propulsion · energy interface", placement: "hull", asset: "assets/modules/power/MOD0002.png" },
   { ...base, id: "MOD0003", legacyId: "solar-panel", name: "Solar Panel", category: "power", subcategory: "generation", type: "module", w: 3, h: 2, description: "External emergency photovoltaic power generation.", function: "Solar power generation", placement: "external" },
   { ...base, id: "MOD0005", legacyId: "ship-computer", name: "Ship Computer", category: "core-systems", subcategory: "control", type: "module", w: 2, h: 2, description: "Central ship data and control interface.", function: "Ship systems control", placement: "hull" },
   { ...base, id: "MOD0006", legacyId: "sleeping-module", name: "Sleeping Module", category: "crew-medical", subcategory: "crew-quarters", type: "module", w: 2, h: 1, description: "Ordinary sleeping accommodation for the researcher.", function: "Crew rest", placement: "hull" },
@@ -10,7 +10,8 @@ export const MODULES = [
   { ...base, id: "MOD0009", legacyId: "material-tanks", name: "Material Tanks", category: "material-processing", subcategory: "storage", type: "module", w: 4, h: 1, description: "Four basic material storage compartments.", function: "Material storage", placement: "hull" },
   { ...base, id: "MOD0010", legacyId: "material-separator", name: "Material Separator", category: "material-processing", subcategory: "processing", type: "module", w: 2, h: 1, description: "Classifies mixed incoming material into storage categories.", function: "Material separation", placement: "hull" },
   { ...base, id: "MOD0011", legacyId: "life-support-panel", name: "Life Support Panel", category: "core-systems", subcategory: "life-support", type: "module", w: 2, h: 1, description: "Life-support system control interface.", function: "Life support control", placement: "hull" },
-  { ...base, id: "MOD0012", legacyId: "battery-storage", name: "Battery Storage", category: "power", subcategory: "storage", type: "module", w: 2, h: 2, description: "High-capacity electrical energy storage.", function: "Electrical energy storage", placement: "hull" }
+  { ...base, id: "MOD0012", legacyId: "battery-storage", name: "Battery Storage", category: "power", subcategory: "storage", type: "module", w: 2, h: 2, description: "High-capacity electrical energy storage.", function: "Electrical energy storage", placement: "hull" },
+  { ...base, id: "MOD0013", legacyId: "anchor-module", name: "Anchor Module", category: "core-systems", subcategory: "anchoring", type: "module", w: 2, h: 2, description: "Ship anchoring and tethered cargo transport interface.", function: "Ship anchoring · cargo tether", placement: "hull" }
 ];
 
 export const MODULE_BY_ID = Object.freeze(Object.fromEntries(MODULES.map(item => [item.id, item])));
