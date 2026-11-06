@@ -63,7 +63,7 @@ export function generateCosmicBody({
     const candidateLookup = Object.fromEntries(candidates.map(cell => [key(cell.x, cell.y), cell]));
     let carved = 0;
     const directions = [[1, 0], [-1, 0], [0, 1], [0, -1]];
-    while (carved < target && candidates.length) {
+    while (carved < target && candidates.some(cell => cell.kind === "solid")) {
       const start = candidates[Math.floor(random() * candidates.length)];
       if (start.kind === "cavity") continue;
       const frontier = [start];
