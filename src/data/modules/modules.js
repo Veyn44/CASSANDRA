@@ -1,7 +1,7 @@
-const base = { stats: {}, attributes: {}, requirements: {}, systems: {} };
+const base = { stats: {}, attributes: {}, requirements: {}, systems: {}, defaultMaterialFamily: "titanium" };
 
 export const MODULES = [
-  { ...base, id: "MOD0002", legacyId: "resonance-core", name: "Resonance Core (RC)", tileCapacity: null, category: "core-systems", subcategory: "resonance", type: "module", w: 2, h: 2, description: "Central resonance propulsion and energy interface. Exposed to vacuum.", function: "Resonance propulsion · energy interface", placement: "hull", asset: "assets/modules/power/MOD0002.png" },
+  { ...base, id: "MOD0002", legacyId: "resonance-core", name: "Resonance Core (RC)", tileCapacity: 300, category: "core-systems", subcategory: "resonance", type: "module", w: 2, h: 2, description: "Central resonance propulsion and energy interface. Exposed to vacuum.", function: "Resonance propulsion · energy interface", placement: "hull", asset: "assets/modules/power/MOD0002.png" },
   { ...base, id: "MOD0003", legacyId: "solar-panel", name: "Solar Panel", category: "power", subcategory: "generation", type: "module", w: 3, h: 2, description: "External emergency photovoltaic power generation.", function: "Solar power generation", placement: "external" },
   { ...base, id: "MOD0005", legacyId: "ship-computer", name: "Ship Computer", category: "core-systems", subcategory: "control", type: "module", w: 2, h: 2, description: "Central ship data and control interface.", function: "Ship systems control", placement: "hull" },
   { ...base, id: "MOD0006", legacyId: "sleeping-module", name: "Sleeping Module", category: "crew-medical", subcategory: "crew-quarters", type: "module", w: 2, h: 1, description: "Ordinary sleeping accommodation for the researcher.", function: "Crew rest", placement: "hull" },
