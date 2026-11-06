@@ -26,9 +26,6 @@ $("#new-game").onclick=()=>start("normal");$("#dev-new-game").onclick=()=>start(
 $("#dev-tools-button").onclick=()=>{devToolsMenu.hidden=!devToolsMenu.hidden;$("#dev-tools-button").setAttribute("aria-expanded",String(!devToolsMenu.hidden));};
 $("#open-ast-gen").onclick=()=>{devToolsMenu.hidden=true;devPanel?.open();};
 $("#close-ast-gen").onclick=()=>devPanel?.close();
-function updateShipCreatorCount(){if(!state)return;const tiles=Object.values(state.map.tiles);$("#ship-creator-result").textContent="HULL "+tiles.filter(t=>t.hull).length+" · WALLS "+tiles.filter(t=>t.hull&&t.wall).length;}
-function openShipCreator(){if(!dev||!state)return;devToolsMenu.hidden=true;devPanel?.close();$("#module-drawer").hidden=true;shipPanel.hidden=false;state.shipCreator.active=true;state.shipCreator.tool="hull";state.activeTool=null;document.querySelectorAll("[data-ship-tool]").forEach(b=>b.classList.toggle("active",b.dataset.shipTool==="hull"));noteText("DEV SHIP CREATOR · PLACE COMPLETED HULL / WALLS OR ERASE.");updateShipCreatorCount();refresh();}
-function closeShipCreator(){shipPanel.hidden=true;if(state?.shipCreator)state.shipCreator.active=false;if(state)state.hoverTile=null;renderer?.draw();}
 $("#dev-creator-toggle").onclick=()=>{if(!dev||!state)return;state.devCreator=!state.devCreator;$("#dev-creator-toggle").textContent=state.devCreator?"DEV CREATOR: ON":"DEV CREATOR";noteText(state.devCreator?"DEV CREATOR ENABLED · ITEMS ARE BUILT IMMEDIATELY":"DEV CREATOR DISABLED · BLUEPRINT CONSTRUCTION");refresh();};
 
 
