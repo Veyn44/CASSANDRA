@@ -82,7 +82,9 @@ export function generateCosmicBody({
       if (carved === 0 && candidates.every(cell => cell.kind === "cavity")) break;
     }
   }
-  body.occupiedTileCount = cells.filter(cell => cell.kind === "solid").length;
+  body.cellLookup = Object.fromEntries(cells.filter(cell => cell.kind === "solid").map(cell => [key(cell.x, cell.y), cell]));
+  body.solidCells = cells.filter(cell => cell.kind === "solid");
+  body.occupiedTileCount = body.solidCells.length;
   body.cavityTileCount = body.cavities.length;
   return body;
 }
