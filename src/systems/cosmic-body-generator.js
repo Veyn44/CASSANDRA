@@ -1,3 +1,4 @@
+export const ASTEROID_CELL_KINDS=Object.freeze({ROCK:"solid",NATURAL_CAVITY:"cavity",EXCAVATED_FLOOR:"floor"});
 const key=(x,y)=>x+","+y;
 function createRandom(seed){let state=(Number(seed)>>>0)||1;return()=>{state+=0x6D2B79F5;let t=state;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14)>>>0)>>>0)/4294967296;};}
 function smoothNoise(random,width,height,scale=5){const cols=Math.max(2,Math.ceil(width/scale)+1),rows=Math.max(2,Math.ceil(height/scale)+1),grid=Array.from({length:rows},()=>Array.from({length:cols},random));return(x,y)=>{const gx=x/scale,gy=y/scale,ix=Math.floor(gx),iy=Math.floor(gy),fx=gx-ix,fy=gy-iy,sx=fx*fx*(3-2*fx),sy=fy*fy*(3-2*fy),a=grid[iy][ix]*(1-sx)+grid[iy][ix+1]*sx,b=grid[iy+1][ix]*(1-sx)+grid[iy+1][ix+1]*sx;return a*(1-sy)+b*sy;};}
