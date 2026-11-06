@@ -18,5 +18,8 @@ A body is a two-dimensional set of occupied grid cells. Its width and height des
 ## Visibility
 Visibility is player knowledge, not world state. Revealing or hiding a cell must never delete or mutate its underlying world data. The initial surface visibility and later scanner reveals are handled by `visibility-manager.js`.
 
+## Researcher action points
+The current prototype starts with 12 action points per turn. The turn manager restores the pawn to its configured maximum when a turn advances.
+
 ## Game modes
 Normal and developer modes share the same game systems. Their differences are expressed through a configuration object rather than separate simulation implementations.
