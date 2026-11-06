@@ -5,7 +5,7 @@ const DIRECTIONS = [[1, 0], [-1, 0], [0, 1], [0, -1]];
 export function getSurfaceCells(body) {
   const surface = [];
   for (const cell of (body.solidCells ?? body.cells.filter(cell => cell.kind === "solid"))) {
-    const isSurface = DIRECTIONS.some(([dx, dy]) => !body.cellLookup[key(cell.x + dx, cell.y + dy)]);
+    const isSurface = DIRECTIONS.some(([dx, dy]) => !body.outerLookup[key(cell.x + dx, cell.y + dy)]);
     if (isSurface) surface.push({ x: cell.x, y: cell.y });
   }
   return surface;
