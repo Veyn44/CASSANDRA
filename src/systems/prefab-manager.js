@@ -38,22 +38,25 @@ export function validatePrefabPlacement(s, id, x, y, rotation = s.rotation) {
     const tx = x + xx, ty = y + yy, k = tx + "," + ty;
     if (tx < 0 || ty < 0 || tx >= 128 || ty >= s.map.height) return { valid: false, message: tx >= 128 ? "SHIP CONSTRUCTION IS LIMITED TO THE LEFT SECTOR" : "OUT OF MAP" };
     const tile = s.map.tiles[k];
-    if (objects.some(o => tx >= o.x && ty >= o.y && tx < o.x + o.w && ty < o.y + o.h)) return { valid: false, message: "TILE BLOCKED" };
+    const occupyingObjects = objects.filter(o => tx >= o.x && ty >= o.y && tx < o.x + o.w && ty < o.y + o.h);
+    if (occupyingObjects.some(o => !(item.outer && o.type === "STR0001"))) return { valid: false, message: "TILE BLOCKED" };
     if (item.placement === "wall-opening") {
       if (!tile?.hull) return { valid: false, message: "DOORS REQUIRE A HULL TILE" };
-    } else if (item.placement === "external-frame" || item.placement === "external") {
+    } else if (item.placement === "external-frame" || item.outer) {
       if (tile?.hull || tile?.wall) return { valid: false, message: "EXTERNAL EQUIPMENT MUST BE OUTSIDE THE HULL" };
-      const adjacentHull = [[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy]) => s.map.tiles[(tx+dx)+","+(ty+dy)]?.hull);
-      const adjacentFrame = objects.some(o => o.type === "STR0001" && rectanglesTouch({ x: tx, y: ty, w: 1, h: 1 }, o));
-      if (item.placement === "external-frame" && !adjacentHull && !adjacentFrame) return { valid: false, message: "EXTERNAL FRAME MUST TOUCH HULL OR ANOTHER FRAME" };
+      if (item.placement === "external-frame") {
+        const adjacentHull = [[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy]) => s.map.tiles[(tx+dx)+","+(ty+dy)]?.hull);
+        const adjacentFrame = objects.some(o => o.type === "STR0001" && rectanglesTouch({ x: tx, y: ty, w: 1, h: 1 }, o));
+        if (!adjacentHull && !adjacentFrame) return { valid: false, message: "EXTERNAL FRAME MUST TOUCH HULL OR ANOTHER FRAME" };
+      }
     } else if (item.placement === "wall-mounted") {
       if (!tile?.hull || !tile?.wall) return { valid: false, message: "WALL LIGHT REQUIRES A WALL TILE" };
     } else if (!tile?.hull || tile?.wall) return { valid: false, message: "HULL REQUIRED · PLACE ON AN OPEN HULL TILE" };
   }
-  if (item.placement === "external") {
-    const panel = { x, y, w, h };
-    const hasAdjacentFrame = objects.some(o => o.type === "STR0001" && rectanglesTouch(panel, o));
-    if (!hasAdjacentFrame) return { valid: false, message: "SOLAR PANEL REQUIRES AN ADJACENT EXTERNAL FRAME" };
+  if (item.outer) {
+    const hasFrameUnderModule = objects.some(o => o.type === "STR0001" &&
+      x < o.x + o.w && x + w > o.x && y < o.y + o.h && y + h > o.y);
+    if (!hasFrameUnderModule) return { valid: false, message: "OUTER MODULE REQUIRES AN EXTERNAL FRAME UNDER ITS FOOTPRINT" };
   }
   return { valid: true, message: item.name + " READY", w, h };
 }
