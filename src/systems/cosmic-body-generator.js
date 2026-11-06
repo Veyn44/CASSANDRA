@@ -53,7 +53,7 @@ export function generateCosmicBody({
     }
   }
 
-  const body = { id: "AST" + String(seed >>> 0).padStart(4, "0"), seed: Number(seed) >>> 0, x, y, width: w, height: h, cells, cellLookup, cavities: [] };
+  const body = { id: "AST" + String(seed >>> 0).padStart(4, "0"), seed: Number(seed) >>> 0, x, y, width: w, height: h, cells, outerLookup: { ...cellLookup }, cellLookup, cavities: [] };
   if (interior !== "solid" && cells.length) {
     const target = Math.floor(cells.length * Math.max(0, Math.min(0.2, cavityDensity)));
     const candidates = cells.filter(cell => {
