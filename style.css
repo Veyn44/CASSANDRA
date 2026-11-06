@@ -54,3 +54,13 @@ html,body{width:100%;height:100%;min-height:0;overflow:hidden}
 .pawn-toolbar #dev-tools-wrap[hidden]{display:none!important}
 
 .ast-gen-grid select{width:100%;min-width:0;padding:8px;background:#111e28;border:1px solid #405463;color:#e4edf2;font:10px ui-monospace,monospace;letter-spacing:.02em}
+
+/* DEV Ship Creator */
+.ship-creator-panel{position:absolute;z-index:13;top:12px;right:12px;width:min(340px,calc(100% - 24px));padding:14px;background:rgba(9,17,26,.97);border:1px solid #8b765e;box-shadow:0 15px 45px #000c;backdrop-filter:blur(8px)}
+.ship-creator-panel[hidden]{display:none!important}
+.ship-creator-panel>header{display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid #3d4c55;color:#e7d1b4;font-size:10px;letter-spacing:.16em}
+.ship-creator-panel>header button{width:28px;height:26px;background:#1d2b34;border:1px solid #60717b;color:#e7edf1;font-size:18px}
+.ship-creator-panel>p{margin:12px 0;color:#a9b9c3;font-size:9px;line-height:1.5}
+.ship-creator-tools{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:12px 0}
+.ship-creator-tools button{padding:11px 5px;background:#172936;border:1px solid #526b7b;color:#e4edf2;font-size:10px}
+.ship-creator-tools button.active{background:#294353;border-color:#b18b60;color:#f0d1a8}
