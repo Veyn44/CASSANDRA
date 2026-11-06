@@ -5,7 +5,7 @@ import{updateSidebar}from"./ui/sidebar.js";
 import{PREFABS,getBuildable}from"./systems/prefab-manager.js";
 import{bindDevPanel}from"./ui/dev-panel.js";
 const $=selector=>document.querySelector(selector);
-const menu=$("#main-menu"),shell=$("#game-shell"),options=$("#options-panel"),devIndicator=$("#dev-indicator"),canvas=$("#game-canvas"),categories=$("#build-categories"),buildBtn=$("#build-menu-toggle"),materialBtn=$("#material-titanium"),titaniumBuilds=$("#titanium-builds"),note=$("#construction-note"),gridBtn=$("#grid-toggle"),pauseMenu=$("#pause-menu"),leaveConfirm=$("#leave-confirm"),devWrap=$("#dev-tools-wrap"),devToolsMenu=$("#dev-tools-menu"),astPanel=$("#ast-gen-panel"),shipPanel=$("#ship-creator-panel");
+const menu=$("#main-menu"),shell=$("#game-shell"),options=$("#options-panel"),devIndicator=$("#dev-indicator"),canvas=$("#game-canvas"),categories=$("#build-categories"),buildBtn=$("#build-menu-toggle"),materialBtn=$("#material-titanium"),titaniumBuilds=$("#titanium-builds"),note=$("#construction-note"),gridBtn=$("#grid-toggle"),pauseMenu=$("#pause-menu"),leaveConfirm=$("#leave-confirm"),devWrap=$("#dev-tools-wrap"),devToolsMenu=$("#dev-tools-menu"),astPanel=$("#ast-gen-panel");
 let dev=false,state=null,renderer=null,devPanel=null,activeCategory="core-systems";
 const CATALOG_CATEGORIES=[["structure","STRUCTURE"],["access","ACCESS"],["core-systems","CORE SYSTEMS"],["power","POWER"],["material-processing","MATERIAL PROCESSING"],["crew-medical","CREW & MEDICAL"],["furniture","FURNITURE"]];
 function noteText(t){note.textContent=t;}
