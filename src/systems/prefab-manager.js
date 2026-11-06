@@ -44,7 +44,8 @@ export function validatePrefabPlacement(s, id, x, y, rotation = s.rotation) {
     } else if (item.placement === "external-frame" || item.placement === "external") {
       if (tile?.hull || tile?.wall) return { valid: false, message: "EXTERNAL EQUIPMENT MUST BE OUTSIDE THE HULL" };
       const adjacentHull = [[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy]) => s.map.tiles[(tx+dx)+","+(ty+dy)]?.hull);
-      if (item.placement === "external-frame" && !adjacentHull) return { valid: false, message: "EXTERNAL FRAME MUST TOUCH THE HULL" };
+      const adjacentFrame = objects.some(o => o.type === "STR0001" && rectanglesTouch({ x: tx, y: ty, w: 1, h: 1 }, o));
+      if (item.placement === "external-frame" && !adjacentHull && !adjacentFrame) return { valid: false, message: "EXTERNAL FRAME MUST TOUCH HULL OR ANOTHER FRAME" };
     } else if (item.placement === "wall-mounted") {
       if (!tile?.hull || !tile?.wall) return { valid: false, message: "WALL LIGHT REQUIRES A WALL TILE" };
     } else if (!tile?.hull || tile?.wall) return { valid: false, message: "HULL REQUIRED · PLACE ON AN OPEN HULL TILE" };
