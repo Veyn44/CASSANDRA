@@ -2,7 +2,7 @@ import { MODULES, getModule } from "../data/modules/modules.js";
 import { STRUCTURES, getStructure } from "../data/structures/structures.js";
 import { FURNITURE, getFurniture } from "../data/furniture/furniture.js";
 
-export const PREFABS = [...MODULES, ...STRUCTURES.filter(item => item.id !== "STR0001"), ...FURNITURE];
+export const PREFABS = [...MODULES, ...STRUCTURES, ...FURNITURE];
 export const getBuildable = id => getModule(id) ?? getStructure(id) ?? getFurniture(id);
 export function rotateTool(s, step) { s.rotation = (s.rotation + step + 4) % 4; }
 export function prefabSize(item, rotation) { return rotation % 2 ? { w: item.h, h: item.w } : { w: item.w, h: item.h }; }
