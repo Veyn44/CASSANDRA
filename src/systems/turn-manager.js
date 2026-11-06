@@ -13,4 +13,40 @@ export function completePlanAction(s,x,y){const k=key(x,y),plan=s.map.plans[k],t
 export function completeModuleAction(s,id){const o=s.map.objects[id];if(!o||o.built)return{ok:false,message:"NO MODULE BLUEPRINT HERE"};if(s.pawn.op<1)return{ok:false,message:"NOT ENOUGH AP · 1 AP REQUIRED"};if(!s.gameConfig.freeConstruction&&s.resources.titanium<1)return{ok:false,message:"INSUFFICIENT TITANIUM"};if(!s.gameConfig.freeConstruction)s.resources.titanium--;o.built=true;s.pawn.op--;return{ok:true,message:"MODULE CONSTRUCTED · "+(getModule(o.type)?.legacyId??o.type).toUpperCase()+" · 1 AP SPENT"};}
 export function endTurn(s){s.turn++;if((s.turn-1)%2===0)s.day++;s.pawn.op=s.pawn.maxOP;return{message:"TURN ADVANCED · OPERATIONAL POINTS RESTORED"};}
  
-export function generateAsteroidForState(s,params={}){const body=generateCosmicBody(params),anchor=s.map.anchor??{x:192,y:64},side=((Math.floor(Number(params.clusterSide)||0)%4)+4)%4,offsetX=Math.floor(Number(params.centerOffsetX)||0),offsetY=Math.floor(Number(params.centerOffsetY)||0),w=body.width,h=body.height,pad=8;let centerX=anchor.x,centerY=anchor.y;if(side===0)centerY=anchor.y+h/2+pad;else if(side===1)centerX=anchor.x-w/2-pad;else if(side===2)centerY=anchor.y-h/2-pad;else centerX=s.map.width-w/2-pad;centerX+=offsetX;centerY+=offsetY;const minX=Math.min(...body.cells.map(c=>c.x),...(body.separationCells??[]).map(c=>c.x)),maxCellX=Math.max(...body.cells.map(c=>c.x),...(body.separationCells??[]).map(c=>c.x)),minY=Math.min(...body.cells.map(c=>c.y),...(body.separationCells??[]).map(c=>c.y)),maxCellY=Math.max(...body.cells.map(c=>c.y),...(body.separationCells??[]).map(c=>c.y));const shiftX=Math.max(128,Math.min(s.map.width-1-maxCellX,Math.round(centerX-(minX+maxCellX)/2))),shiftY=Math.max(0,Math.min(s.map.height-1-maxCellY,Math.round(centerY-(minY+maxCellY)/2)));body.x=minX+shiftX;body.y=minY+shiftY;for(const cell of body.cells){cell.x+=shiftX;cell.y+=shiftY;}for(const cell of body.separationCells??[]){cell.x+=shiftX;cell.y+=shiftY;}body.parts.forEach(part=>{part.x+=shiftX;part.y+=shiftY;});body.outerLookup=Object.fromEntries(body.cells.map(c=>[key(c.x,c.y),true]));body.cellLookup=Object.fromEntries(body.solidCells.map(c=>[key(c.x,c.y),c]));body.groundLookup=Object.fromEntries(body.cells.filter(c=>c.kind==="cavity").map(c=>[key(c.x,c.y),c]));body.cavities=body.cells.filter(c=>c.kind==="cavity").map(c=>({x:c.x,y:c.y,type:"ground",group:c.cavityGroup,walkable:true,fogExempt:true}));body.clusterSide=side;s.map.asteroid=body;s.map.asteroidVisibility=createVisibility(body,{revealAll:s.gameConfig.devToolsEnabled});return body;}
+function seededRandom(seed){let state=(Number(seed)>>>0)||1;return()=>{state=(Math.imul(state,1664525)+1013904223)>>>0;return state/4294967296;};}
+function bodyCellsFitCircle(cells,dx,dy,cx,cy,radius){return cells.every(cell=>Math.hypot(cell.x+dx-cx,cell.y+dy-cy)<=radius);}
+function bodyCellsSeparated(cells,placed){const occupied=new Set();for(const body of placed)for(const cell of body.cells)occupied.add(key(cell.x,cell.y));for(const cell of cells){for(let oy=-1;oy<=1;oy++)for(let ox=-1;ox<=1;ox++)if(occupied.has(key(cell.x+ox,cell.y+oy)))return false;}return true;}
+export function generateAsteroidForState(s,params={}){
+ const total=Math.max(1,Math.min(8,Math.floor(Number(params.bodyCount)||1))),seed=Number(params.seed)>>>0,anchor=s.map.anchor??{x:192,y:64},majorW=Math.max(3,Math.floor(params.width||70)),majorH=Math.max(3,Math.floor(params.height||28)),rng=seededRandom(seed^0x71A57),cavityTotal=Math.max(0,Math.min(20,Math.floor(params.cavityCount||0))),percent=Math.max(0,Math.min(30,Number(params.cavitySizePercent)||0));
+ const major=generateCosmicBody({seed,x:0,y:0,width:majorW,height:majorH,bodyCount:1,cavitySizePercent:percent,cavityCount:Math.min(cavityTotal,20),interior:"mixed",roundness:.82,irregularity:.12});
+ const majorSolid=major.solidCells.length;if(!majorSolid)throw new Error("MAJOR BODY GENERATION FAILED");
+ const radius=Math.min(62,Math.ceil(Math.max(majorW,majorH)*.5*1.25));
+ const bodies=[{id:"MAJOR-01",role:"major",width:majorW,height:majorH,cells:major.cells,solidCells:major.solidCells,cavityTileCount:major.cavityTileCount,cavityGroupCount:major.cavityGroupCount,seed}];
+ const placed=[{cells:major.cells.map(c=>({...c,x:c.x+anchor.x-Math.floor(majorW/2),y:c.y+anchor.y-Math.floor(majorH/2)}))}];
+ const majorDX=anchor.x-Math.floor(majorW/2),majorDY=anchor.y-Math.floor(majorH/2);
+ for(let i=0;i<major.cells.length;i++){major.cells[i].x+=majorDX;major.cells[i].y+=majorDY;major.cells[i].bodyId="MAJOR-01";major.cells[i].bodyRole="major";}
+ const minorCount=total-1,minorBaseScale=minorCount?Math.min(.72,.72/Math.sqrt(minorCount)):0;
+ for(let i=0;i<minorCount;i++){
+   const scale=minorBaseScale*(.72+rng()*.28),mw=Math.max(3,Math.floor(majorW*scale)),mh=Math.max(3,Math.floor(majorH*scale));
+   const cavitiesForBody=Math.floor(cavityTotal/total)+(i+1<cavityTotal%total?1:0);
+   const generated=generateCosmicBody({seed:(seed+(i+1)*7919)>>>0,x:0,y:0,width:mw,height:mh,bodyCount:1,cavitySizePercent:percent,cavityCount:cavitiesForBody,interior:"mixed",roundness:.82,irregularity:.12});
+   const candidates=[];
+   for(let attempt=0;attempt<900;attempt++){
+     const angle=rng()*Math.PI*2,radial=Math.sqrt(rng())*Math.max(1,radius-Math.max(mw,mh)*.5-1);
+     const dx=Math.round(anchor.x+Math.cos(angle)*radial-Math.floor(mw/2)),dy=Math.round(anchor.y+Math.sin(angle)*radial-Math.floor(mh/2));
+     if(!bodyCellsFitCircle(generated.cells,dx,dy,anchor.x,anchor.y,radius))continue;
+     const candidate=generated.cells.map(c=>({...c,x:c.x+dx,y:c.y+dy}));
+     if(!bodyCellsSeparated(candidate,placed))continue;
+     candidates.push({dx,dy,candidate});break;
+   }
+   if(!candidates.length)throw new Error("NOT ENOUGH ROOM INSIDE GENERATION RADIUS FOR "+(minorCount)+" MINOR BODIES. REDUCE BODY COUNT OR SIZE.");
+   const placement=candidates[0],id="MINOR-"+String(i+1).padStart(2,"0");
+   for(const cell of generated.cells){cell.x+=placement.dx;cell.y+=placement.dy;cell.bodyId=id;cell.bodyRole="minor";}
+   bodies.push({id,role:"minor",width:mw,height:mh,cells:generated.cells,solidCells:generated.solidCells,cavityTileCount:generated.cavityTileCount,cavityGroupCount:generated.cavityGroupCount,seed:generated.seed});
+   placed.push({cells:placement.candidate});
+ }
+ const allCells=bodies.flatMap(body=>body.cells),solidCells=allCells.filter(c=>c.kind==="solid"),cavityCells=allCells.filter(c=>c.kind==="cavity");
+ if(solidCells.filter(c=>c.bodyRole==="major").length/solidCells.length<.5)throw new Error("MAJOR BODY MUST CONTAIN AT LEAST 50% OF ALL ROCK TILES.");
+ const body={id:"CLUSTER-"+String(seed).padStart(4,"0"),seed,x:anchor.x,y:anchor.y,width:majorW,height:majorH,bodies,cells:allCells,solidCells,occupiedTileCount:solidCells.length,cavityTileCount:cavityCells.length,cavityGroupCount:new Set(cavityCells.map(c=>c.cavityGroup)).size,bodyCount:total,majorBody:bodies[0],generationArea:{x:anchor.x,y:anchor.y,radius},outerLookup:Object.fromEntries(allCells.map(c=>[key(c.x,c.y),true])),cellLookup:Object.fromEntries(solidCells.map(c=>[key(c.x,c.y),c])),groundLookup:Object.fromEntries(cavityCells.map(c=>[key(c.x,c.y),c])),cavities:cavityCells.map(c=>({x:c.x,y:c.y,type:"ground",group:c.cavityGroup,bodyId:c.bodyId,walkable:true,fogExempt:true}))};
+ s.map.asteroid=body;s.map.asteroidVisibility=createVisibility(body,{revealAll:s.gameConfig.devToolsEnabled});return body;
+}
