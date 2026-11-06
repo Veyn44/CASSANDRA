@@ -23,7 +23,7 @@ export function validatePrefabPlacement(s, id, x, y, rotation = s.rotation) {
       if (!tile?.hull || !tile?.wall) return { valid: false, message: "DOORS MUST REPLACE AN EXISTING WALL" };
     } else if (item.placement === "external-frame" || item.placement === "external") {
       if (tile?.hull || tile?.wall) return { valid: false, message: "EXTERNAL EQUIPMENT MUST BE OUTSIDE THE HULL" };
-      const adjacentHull = [[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy]) => s.map.tiles[(tx+dx)+","+(ty+dy)]?.hull);
+      const adjacentHull = [[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy]) => (s.map.tiles[(tx+dx)+","+(ty+dy)]?.hull && !s.map.tiles[(tx+dx)+","+(ty+dy)]?.wall));
       if (item.placement === "external-frame" && !adjacentHull) return { valid: false, message: "EXTERNAL FRAME MUST TOUCH THE HULL" };
     } else if (item.placement === "wall-mounted") { if (!tile?.hull || !tile?.wall) return { valid: false, message: "WALL LIGHT REQUIRES A WALL TILE" }; } else if (!tile?.hull || tile?.wall) return { valid: false, message: "HULL REQUIRED · PLACE ON AN OPEN HULL TILE" };
   }
