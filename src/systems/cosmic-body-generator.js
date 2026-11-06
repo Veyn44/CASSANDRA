@@ -60,17 +60,29 @@ export function generateCosmicBody({
       const dx = cell.x - (x + cx), dy = cell.y - (y + cy);
       return Math.abs(dx) < rx * 0.7 && Math.abs(dy) < ry * 0.7;
     });
+    const candidateLookup = Object.fromEntries(candidates.map(cell => [key(cell.x, cell.y), cell]));
     let carved = 0;
-    for (const cell of candidates) {
-      if (carved >= target) break;
-      if (random() < 0.16) {
+    const directions = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+    while (carved < target && candidates.length) {
+      const start = candidates[Math.floor(random() * candidates.length)];
+      if (start.kind === "cavity") continue;
+      const frontier = [start];
+      while (frontier.length && carved < target) {
+        const cell = frontier.shift();
+        if (!cell || cell.kind === "cavity") continue;
         cell.kind = "cavity";
         cell.materialId = null;
         body.cavities.push({ x: cell.x, y: cell.y, type: "void" });
         carved++;
+        for (const [dx, dy] of directions) {
+          const next = candidateLookup[key(cell.x + dx, cell.y + dy)];
+          if (next && next.kind === "solid" && random() < 0.72) frontier.push(next);
+        }
       }
+      if (carved === 0 && candidates.every(cell => cell.kind === "cavity")) break;
     }
   }
-  body.occupiedTileCount = cells.length;
+  body.occupiedTileCount = cells.filter(cell => cell.kind === "solid").length;
+  body.cavityTileCount = body.cavities.length;
   return body;
 }
