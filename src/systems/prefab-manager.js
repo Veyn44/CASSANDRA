@@ -1,25 +1,14 @@
-export const PREFABS=[
-{id:"command",name:"Command & Navigation Unit",w:2,h:1,description:"Navigation, current star system, ship status and mission overview.",function:"Command interface · future system"},
-{id:"reactor",name:"Resonance Fusion Core",w:2,h:2,description:"Energy generation and artificial gravity.",function:"Power and artificial gravity"},
-{id:"engine",name:"Resonance Drive",w:3,h:1,description:"External propulsion module. At least one tile must overlap the connected hull; remaining section extends beyond the ship and can be damaged.",function:"Interstellar propulsion · exposed to external damage",edge:true},
-{id:"hydroponics",name:"Hydroponics",w:3,h:1,description:"Compact food production module.",function:"Food production"},
-{id:"water-tank",name:"Water Tank",w:1,h:1,description:"Stores recovered water and ice. Water and ice are routed here before electrolysis.",function:"Water storage"},
-{id:"hydrogen-tank",name:"Hydrogen Tank",w:1,h:1,description:"Stores hydrogen produced by electrolysis. Hydrogen is consumed for interstellar jumps and may have a small passive standby drain.",function:"Hydrogen fuel storage"},
-{id:"electrolyzer",name:"Electrolyzer",w:1,h:1,description:"Splits water into oxygen for life support and hydrogen for the drive.",function:"Water processing"},
-{id:"research",name:"Research Workbench",w:2,h:1,description:"Sample analysis, materials research and experiments.",function:"Research and analysis"},
-{id:"bunk",name:"Personal Bunk",w:2,h:1,description:"Crew sleeping and recovery space.",function:"Rest and recovery"},
-{id:"suit-rack",name:"Powered Suit Dock",w:1,h:1,description:"The researcher docks into the powered suit. It attaches around the pawn; it is not a changing room.",function:"Suit-up / suit removal"},
-{id:"storage",name:"Material Storage",w:2,h:1,description:"Shared material storage. Each unit has 100 capacity for non-water materials.",function:"Shared material inventory · capacity 100"},
-{id:"door-wide",name:"Wide Bulkhead Door",w:2,h:1,description:"Two-tile sliding door for ship compartments and the airlock.",function:"Passage / pressure boundary"},
-{id:"door-single",name:"Single Bulkhead Door",w:1,h:1,description:"Compact single-tile sliding door.",function:"Passage / pressure boundary"}
-];
+import { MODULES, getModule } from "../data/modules/modules.js";
+
+export const PREFABS = MODULES;
+
 export function rotateTool(s,step){s.rotation=(s.rotation+step+4)%4;}
 export function prefabSize(p,rotation){return rotation%2?{w:p.h,h:p.w}:{w:p.w,h:p.h};}
 export function validatePrefabPlacement(s,id,x,y,rotation=s.rotation){
-const p=PREFABS.find(v=>v.id===id);if(!p)return{valid:false,message:"UNKNOWN MODULE"};
+const p=getModule(id);if(!p)return{valid:false,message:"UNKNOWN MODULE"};
 const {w,h}=prefabSize(p,rotation);let hullOverlap=0;
 for(let yy=0;yy<h;yy++)for(let xx=0;xx<w;xx++){
-const tx=x+xx,ty=y+yy,k=tx+","+ty;if(tx<0||ty<0||tx>=128||ty>=128)return{valid:false,message:"OUT OF MAP"};
+const tx=x+xx,ty=y+yy,k=tx+","+ty;if(tx<0||ty<0||tx>=s.map.width||ty>=s.map.height)return{valid:false,message:"OUT OF MAP"};
 const tile=s.map.tiles[k];
 if(tile?.wall||Object.values(s.map.objects).some(o=>tx>=o.x&&ty>=o.y&&tx<o.x+o.w&&ty<o.y+o.h))return{valid:false,message:"TILE BLOCKED"};
 if(tile?.hull)hullOverlap++;else if(!p.edge)return{valid:false,message:"HULL REQUIRED · MODULE MUST BE PLACED ON HULL"};
@@ -28,4 +17,10 @@ if(p.edge){if(hullOverlap<1||hullOverlap>=w*h)return{valid:false,message:"DRIVE 
 else if(hullOverlap!==w*h)return{valid:false,message:"HULL REQUIRED · ALL MODULE TILES MUST BE ON HULL"};
 return{valid:true,message:p.name+" READY",w,h};
 }
-export function placePrefab(s,id,x,y){const check=validatePrefabPlacement(s,id,x,y);if(!check.valid)return{message:check.message};const idValue="module-"+s.nextObjectId++;s.map.objects[idValue]={id:idValue,type:id,x,y,w:check.w,h:check.h,rotation:s.rotation,built:false};return{message:PREFABS.find(p=>p.id===id).name+" BLUEPRINT PLACED · 1 TITANIUM · 1 AP",objectId:idValue};}
+export function placePrefab(s,id,x,y){
+const p=getModule(id),check=validatePrefabPlacement(s,id,x,y);
+if(!check.valid)return{message:check.message};
+const idValue="module-"+s.nextObjectId++;
+s.map.objects[idValue]={id:idValue,type:p.id,x,y,w:check.w,h:check.h,rotation:s.rotation,built:false};
+return{message:p.name+" BLUEPRINT PLACED · 1 TITANIUM · 1 AP",objectId:idValue};
+}
