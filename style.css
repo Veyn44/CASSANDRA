@@ -64,3 +64,10 @@ html,body{width:100%;height:100%;min-height:0;overflow:hidden}
 .ship-creator-tools{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:12px 0}
 .ship-creator-tools button{padding:11px 5px;background:#172936;border:1px solid #526b7b;color:#e4edf2;font-size:10px}
 .ship-creator-tools button.active{background:#294353;border-color:#b18b60;color:#f0d1a8}
+
+/* Build catalogue categories */
+.catalog-categories{display:flex;gap:6px;flex-wrap:wrap;padding:9px 0 3px;border-bottom:1px solid #2d4557}
+.catalog-category{padding:7px 9px;background:#12212d;border:1px solid #2c4658;color:#9eb4c2;font-size:9px;letter-spacing:.08em}
+.catalog-category:hover,.catalog-category.active{background:#244052;border-color:#78a4bd;color:#e4f0f5}
+.catalog-empty{grid-column:1/-1;padding:18px;color:#8ea3b1;font-size:10px}
+.module-drawer{max-height:min(58%,520px)}
