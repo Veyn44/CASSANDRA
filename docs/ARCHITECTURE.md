@@ -59,7 +59,7 @@ src/
 2. Apply consistent formatting without intentional logic changes.
 3. Extract app bootstrap/session lifecycle from `main.js`.
 4. Separate session-scoped camera controls, pawn command execution and construction placement from pointer input; ensure all timers, listeners and animation loops are disposed with the session.
-5. Split turn management into state creation, hull connectivity, navigation, construction/damage and turn lifecycle. Keep `turn-manager.js` as a compatibility re-export while existing consumers migrate.
+5. Split turn management into state creation, hull connectivity, navigation, construction, damage handling and turn lifecycle. Keep `turn-manager.js` as a compatibility re-export for existing integrations.
 6. Separate world/deck/section responsibilities and add the five-deck data model.
 7. Add power, life support, inventory and shuttle systems as independent domains.
 8. Add multi-deck UI selection and rendering only after the underlying deck model is stable.
