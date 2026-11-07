@@ -40,7 +40,11 @@ export function validatePrefabPlacement(s, id, x, y, rotation = s.rotation) {
     const tile = s.map.tiles[k];
     const occupyingObjects = objects.filter(o => tx >= o.x && ty >= o.y && tx < o.x + o.w && ty < o.y + o.h);
     if (occupyingObjects.some(o => !(item.outer && o.type === "STR0001"))) return { valid: false, message: "TILE BLOCKED" };
-    if (item.placement === "wall-opening") {
+    if (item.placement === "control-panel") {
+      const adjacentAluminium = [[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy]) => s.map.tiles[(tx+dx)+","+(ty+dy)]?.aluminiumWall);
+      if (!tile?.hull || tile.wall || tile.aluminiumWall) return { valid: false, message: "CONTROL PANEL REQUIRES AN OPEN HULL TILE" };
+      if (!adjacentAluminium) return { valid: false, message: "CONTROL PANEL MUST BE ADJACENT TO AN ALUMINIUM WALL" };
+    } else if (item.placement === "wall-opening") {
       if (!tile?.hull) return { valid: false, message: "DOORS REQUIRE A HULL TILE" };
     } else if (item.placement === "external-frame" || item.outer) {
       if (tile?.hull || tile?.wall) return { valid: false, message: "EXTERNAL EQUIPMENT MUST BE OUTSIDE THE HULL" };
@@ -66,6 +70,6 @@ export function placePrefab(s, id, x, y) {
   if (!check.valid) return { message: check.message };
   const idValue = "build-" + s.nextObjectId++;
   const built = Boolean(s.devCreator);
-  s.map.objects[idValue] = { id: idValue, type: item.id, family: item.id.slice(0, 3), x, y, w: check.w, h: check.h, rotation: s.rotation, built, materialFamily: item.defaultMaterialFamily ?? "titanium", ...(item.placement === "wall-opening" ? { wallAttachment: findDoorWallAttachment(s.map.tiles, x, y, check.w, check.h) } : {}) };
+  s.map.objects[idValue] = { id: idValue, type: item.id, family: item.id.slice(0, 3), x, y, w: check.w, h: check.h, rotation: s.rotation, built, materialFamily: item.defaultMaterialFamily ?? "titanium", ...(item.id === "MOD0014" ? { sectionName: "SECTION", integrity: 100 } : {}), ...(item.placement === "wall-opening" ? { wallAttachment: findDoorWallAttachment(s.map.tiles, x, y, check.w, check.h) } : {}) };
   return { message: built ? item.name + " BUILT · DEV CREATOR" : item.name + " BLUEPRINT PLACED · 1 TITANIUM · 1 AP", objectId: idValue };
 }
