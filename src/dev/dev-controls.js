@@ -13,6 +13,7 @@ $('#dev-export-ship-layout').onclick = () => {
   exportShipLayout();
 };
 $('#dev-creator-toggle').onclick = () => {
+  const state = getState();
   if (!isDev() || !state) return;
   state.devCreator = !state.devCreator;
   $('#dev-creator-toggle').textContent = state.devCreator ? 'DEV CREATOR: ON' : 'DEV CREATOR';
@@ -24,6 +25,7 @@ $('#dev-creator-toggle').onclick = () => {
   refresh();
 };
 $('#damage-simulator-toggle').onclick = () => {
+  const state = getState();
   if (!isDev() || !state) return;
   state.damageSimulator.active = !state.damageSimulator.active;
   $('#damage-simulator-toggle').textContent =
@@ -35,5 +37,4 @@ $('#damage-simulator-toggle').onclick = () => {
   );
   refresh();
 };
-
 }
