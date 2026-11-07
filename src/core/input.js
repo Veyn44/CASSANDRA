@@ -9,6 +9,9 @@ import {
 } from '../systems/turn-manager.js';
 const key = (x, y) => x + ',' + y;
 export function bindInput(canvas, s, r, refresh, cancel, note, onControlPanelClick) {
+  const controller = new AbortController();
+  const listen = (target, type, handler, options = {}) =>
+    target.addEventListener(type, handler, { ...options, signal: controller.signal });
   let pan = false,
     last = null,
     painting = false,
@@ -147,6 +150,7 @@ export function bindInput(canvas, s, r, refresh, cancel, note, onControlPanelCli
     s.pawn.moving = true;
     let i = 1;
     const step = () => {
+      if (controller.signal.aborted) return;
       if (i >= path.length) {
         s.pawn.moving = false;
         refresh();
@@ -226,7 +230,7 @@ export function bindInput(canvas, s, r, refresh, cancel, note, onControlPanelCli
       refresh();
     });
   }
-  canvas.addEventListener('pointerdown', (e) => {
+  listen(canvas,'pointerdown', (e) => {
     if (s.paused) return;
     if (e.button === 1) {
       pan = true;
@@ -280,7 +284,7 @@ export function bindInput(canvas, s, r, refresh, cancel, note, onControlPanelCli
       refresh();
     }
   });
-  canvas.addEventListener('pointermove', (e) => {
+  listen(canvas,'pointermove', (e) => {
     if (s.paused) return;
     const p = tile(e.clientX, e.clientY);
     s.hoverTile = inside(p) ? p : null;
@@ -376,10 +380,10 @@ export function bindInput(canvas, s, r, refresh, cancel, note, onControlPanelCli
     painting = false;
     lastPainted = null;
   }
-  canvas.addEventListener('pointerup', stop);
-  canvas.addEventListener('pointercancel', stop);
-  canvas.addEventListener('contextmenu', (e) => e.preventDefault());
-  canvas.addEventListener(
+  listen(canvas,'pointerup', stop);
+  listen(canvas,'pointercancel', stop);
+  listen(canvas,'contextmenu', (e) => e.preventDefault());
+  listen(canvas,
     'wheel',
     (e) => {
       if (s.paused) return;
@@ -392,6 +396,7 @@ export function bindInput(canvas, s, r, refresh, cancel, note, onControlPanelCli
   const heldKeys = new Set();
   let lastFrame = 0;
   function cameraFrame(ts) {
+    if (controller.signal.aborted) return;
     const dt = lastFrame ? Math.min((ts - lastFrame) / 1000, 0.05) : 0;
     lastFrame = ts;
     const speed = (8 * dt) / Math.max(0.55, s.camera.zoom);
@@ -420,7 +425,7 @@ export function bindInput(canvas, s, r, refresh, cancel, note, onControlPanelCli
     requestAnimationFrame(cameraFrame);
   }
   requestAnimationFrame(cameraFrame);
-  window.addEventListener('keydown', (e) => {
+  listen(window,'keydown', (e) => {
     if (s.paused) return;
     const k = e.key.toLowerCase();
     if ((k === 'q' || k === 'e') && s.activeTool === 'prefab') {
@@ -433,5 +438,5 @@ export function bindInput(canvas, s, r, refresh, cancel, note, onControlPanelCli
     e.preventDefault();
     heldKeys.add(k);
   });
-  window.addEventListener('keyup', (e) => heldKeys.delete(e.key.toLowerCase()));
+  listen(window,'keyup', (e) => heldKeys.delete(e.key.toLowerCase()));
 }
