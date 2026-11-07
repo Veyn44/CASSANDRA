@@ -20,14 +20,6 @@ If Pages is already configured for another branch, do not replace that setting w
 
 The automated checks validate formatting, JavaScript syntax and relative import paths. They do not execute the game or verify its visual behavior. Complete this checklist in a browser before treating the refactor as runtime-verified.
 
-## Start
-
-1. Open a terminal in the repository root (the folder containing `index.html`).
-2. On Windows, run `py -m http.server 8000`. If `py` is unavailable, try `python -m http.server 8000`.
-3. Open `http://localhost:8000` in your browser. Keep the terminal running; stop the server with `Ctrl+C` when finished.
-4. Open the browser developer console and keep it visible.
-5. Confirm the main menu appears without console errors. Do not open the page through a `file://` URL; the game uses JavaScript modules.
-
 ## Normal game
 
 - [ ] Start a normal New Game.
