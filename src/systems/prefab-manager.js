@@ -1,3 +1,4 @@
+import { detectSections } from "./section-manager.js";
 import { MODULES, getModule } from "../data/modules/modules.js";
 import { STRUCTURES, getStructure } from "../data/structures/structures.js";
 import { FURNITURE, getFurniture } from "../data/furniture/furniture.js";
@@ -44,6 +45,8 @@ export function validatePrefabPlacement(s, id, x, y, rotation = s.rotation) {
       const adjacentAluminium = [[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy]) => s.map.tiles[(tx+dx)+","+(ty+dy)]?.aluminiumWall);
       if (!tile?.hull || tile.wall || tile.aluminiumWall) return { valid: false, message: "CONTROL PANEL REQUIRES AN OPEN HULL TILE" };
       if (!adjacentAluminium) return { valid: false, message: "CONTROL PANEL MUST BE ADJACENT TO AN ALUMINIUM WALL" };
+      const detected=detectSections(s),sectionId=detected.tileToSection[tx+","+ty];
+      if(sectionId&&objects.some(o=>o.type==="MOD0014"&&detected.tileToSection[o.x+","+o.y]===sectionId)) return { valid: false, message: "THIS SECTION ALREADY HAS A CONTROL PANEL" };
     } else if (item.placement === "wall-opening") {
       if (!tile?.hull) return { valid: false, message: "DOORS REQUIRE A HULL TILE" };
     } else if (item.placement === "external-frame" || item.outer) {
