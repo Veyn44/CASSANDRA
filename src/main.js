@@ -1,3 +1,4 @@
+import { bindPauseControls } from './ui/pause-controls.js';
 import { bindGameplayControls } from './ui/gameplay-controls.js';
 import { renderBuildCatalog } from './ui/build-catalog.js';
 import { renderHud } from './ui/hud.js';
@@ -89,22 +90,17 @@ bindGameplayControls({
   cancelTool,
 });
 
-$('#pause-continue').onclick = resume;
-$('#pause-main-menu').onclick = askLeave;
-$('#confirm-leave-yes').onclick = returnToMenu;
-$('#confirm-leave-no').onclick = () => {
-  leaveConfirm.hidden = true;
-  pauseMenu.hidden = false;
-};
-window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    if (!leaveConfirm.hidden) {
-      leaveConfirm.hidden = true;
-      pauseMenu.hidden = false;
-    } else if (!pauseMenu.hidden) resume();
-    else if (state && !shell.hidden) pause();
-    else if (!options.hidden) options.hidden = true;
-  }
+bindPauseControls({
+  $,
+  getState: () => state,
+  shell,
+  options,
+  pauseMenu,
+  leaveConfirm,
+  pause,
+  resume,
+  askLeave,
+  returnToMenu,
 });
 window.addEventListener('resize', () => {
   if (renderer) {
