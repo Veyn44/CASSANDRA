@@ -28,9 +28,9 @@ src/
 
 - **app**: start New Game / Dev New Game, own the active session, connect UI and systems.
 - **core**: shared game state and configuration; avoid putting gameplay rules here.
-- **world**: deck definitions and selection, map geometry, section detection, ship/asteroid/station generation.
+- **world**: deck definitions and selection, map geometry, section detection and world generation. The asteroid-cluster generator is already separated here; multi-deck and station-generation responsibilities remain future work.
 - **entities**: pawn, shuttle, placed objects and their identity/state. Keep entity data separate from presentation.
-- **systems**: deterministic gameplay rules: turn lifecycle, movement/pathfinding, construction, damage, power, life support, inventory and resource consumption.
+- **systems**: deterministic gameplay rules. The current implementation separates hull connectivity, navigation, construction/damage/turn lifecycle, initial state creation and environmental updates. Power, life support, inventory and resource consumption remain future domains.
 - **rendering**: draw the current state; must not decide simulation outcomes.
 - **ui**: display state and send player commands; must not duplicate simulation rules.
 - **dev**: development-only panels, test controls, generators and the geometry-only ship JSON exporter.
@@ -58,8 +58,8 @@ src/
 1. Establish this architecture map and dedicated destination folders.
 2. Apply consistent formatting without intentional logic changes.
 3. Extract app bootstrap/session lifecycle from `main.js`.
-4. Split input handling into input collection and command execution.
-5. Split turn management into state creation, movement/pathfinding, construction/damage and turn lifecycle.
+4. Separate session-scoped camera controls and pawn command execution from pointer input; ensure all timers, listeners and animation loops are disposed with the session.
+5. Split turn management into state creation, hull connectivity, navigation, construction/damage and turn lifecycle. Keep `turn-manager.js` as a compatibility re-export while existing consumers migrate.
 6. Separate world/deck/section responsibilities and add the five-deck data model.
 7. Add power, life support, inventory and shuttle systems as independent domains.
 8. Add multi-deck UI selection and rendering only after the underlying deck model is stable.
