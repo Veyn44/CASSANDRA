@@ -1,5 +1,5 @@
 import { createSectionsPanel } from '../ui/sections-panel.js';
-import { createInitialState } from '../systems/turn-manager.js';
+import { createInitialState } from '../systems/state-factory.js';
 import { createRenderer } from '../core/renderer.js';
 import { bindInput } from '../core/input.js';
 import { bindDevPanel } from '../ui/dev-panel.js';
