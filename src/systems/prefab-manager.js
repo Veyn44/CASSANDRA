@@ -47,6 +47,7 @@ export function validatePrefabPlacement(s, id, x, y, rotation = s.rotation) {
       if (!tile?.hull || tile.wall || tile.aluminiumWall) return { valid: false, message: "CONTROL PANEL REQUIRES AN OPEN HULL TILE" };
       if (!adjacentAluminium) return { valid: false, message: "CONTROL PANEL MUST BE ADJACENT TO AN ALUMINIUM WALL" };
       const detected=detectSections(s),sectionId=detected.tileToSection[tx+","+ty];
+      if(sectionId&&detected.byId[sectionId]?.tileCount>64) return { valid: false, message: "SECTION EXCEEDS CONTROL PANEL CAPACITY · MAX 64 FLOOR TILES" };
       if(sectionId&&objects.some(o=>o.type==="MOD0014"&&detected.tileToSection[o.x+","+o.y]===sectionId)) return { valid: false, message: "THIS SECTION ALREADY HAS A CONTROL PANEL" };
     } else if (item.placement === "wall-opening") {
       if (!tile?.hull) return { valid: false, message: "DOORS REQUIRE A HULL TILE" };
