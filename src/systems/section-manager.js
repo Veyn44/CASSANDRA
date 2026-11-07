@@ -2,7 +2,7 @@ const key=(x,y)=>x+","+y;
 const DIRS=[[1,0],[-1,0],[0,1],[0,-1]];
 const PRESSURE_STATES=["VACUUM","LOW","OPTIMAL","HIGH","EXTREME"];
 
-function isFloor(tile){return Boolean(tile?.hull);}
+function isFloor(tile){return Boolean(tile?.hull&&!tile.wall&&!tile.aluminiumWall);}
 function wallAt(s,x,y){const t=s.map.tiles[key(x,y)];return Boolean(t?.wall||t?.aluminiumWall);}
 function doorAt(s,x,y){return Object.values(s.map.objects).some(o=>o.family==="STR"&&o.type!=="STR0001"&&o.x===x&&o.y===y&&o.built!==false);}
 function separates(s,a,b){
