@@ -1,4 +1,4 @@
-import { endTurn } from './systems/turn-manager.js';
+import { bindGameplayControls } from './ui/gameplay-controls.js';
 import { renderBuildCatalog } from './ui/build-catalog.js';
 import { renderHud } from './ui/hud.js';
 import { bindMenuControls } from './ui/menu-controls.js';
@@ -77,42 +77,18 @@ bindDevControls({
   exportShipLayout,
 });
 
-buildBtn.onclick = () => {
-  categories.hidden = !categories.hidden;
-  state.activeTool = null;
-  $('#erase-tool').classList.remove('selected');
-  buildBtn.classList.toggle('selected', !categories.hidden);
-  noteText(categories.hidden ? 'Material selection closed.' : 'Select the construction material.');
-  refresh();
-};
-materialBtn.onclick = () => {
-  materialBtn.classList.add('active');
-  noteText('TITANIUM SELECTED · MATERIAL FOR CONSTRUCTION');
-};
-$('#erase-tool').onclick = () => {
-  state.activeTool = 'erase';
-  categories.hidden = true;
-  buildBtn.classList.remove('selected');
-  document.querySelectorAll('[data-tool]').forEach((b) => b.classList.remove('active'));
-  $('#erase-tool').classList.add('selected');
-  noteText('Remove a module or erase a plan; completed Hull / Wall can be marked for demolition.');
-  refresh();
-};
-$('#pawn-select').onclick = () => {
-  state.pawn.selected = true;
-  state.selectedObject = null;
-  cancelTool();
-  noteText('PAWN SELECTED · RIGHT-CLICK A WALKABLE TILE OR CONSTRUCTION PLAN.');
-};
-gridBtn.onclick = () => {
-  state.map.gridVisible = !state.map.gridVisible;
-  refresh();
-};
-$('#next-turn').onclick = () => {
-  const result = endTurn(state);
-  noteText(result.message);
-  refresh();
-};
+bindGameplayControls({
+  $,
+  getState: () => state,
+  categories,
+  buildBtn,
+  materialBtn,
+  noteText,
+  refresh,
+  gridBtn,
+  cancelTool,
+});
+
 $('#pause-continue').onclick = resume;
 $('#pause-main-menu').onclick = askLeave;
 $('#confirm-leave-yes').onclick = returnToMenu;
