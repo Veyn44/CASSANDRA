@@ -49,7 +49,7 @@ export function detectSections(s){
       const sealedBoundary=door?door.closed!==false:hasHullWall;
       if(!sealedBoundary){section.airtight=false;break outer;}
     }
-    if(!section.airtight){section.atmosphere="NONE";section.pressure="VACUUM";section.temperature=-270;section.environment="VACUUM";}
+    if(!section.airtight){section.atmosphere="NONE";section.pressure="VACUUM";section.temperature=null;section.environment="UNSEALED";}
   }
   const result={sections,byId,tileToSection,panels:[]};
   for(const panel of panelObjects(s)){
@@ -59,8 +59,8 @@ export function detectSections(s){
     result.panels.push(record);
   }
   for(const section of sections){
-    if(section.panels.length){section.atmosphere=section.airtight?"PRESENT":"NONE";section.pressure=section.airtight?"OPTIMAL":"VACUUM";section.temperature=section.airtight?24:-270;section.environment=section.airtight?"HABITABLE":"VACUUM";}
-    else{section.atmosphere="NONE";section.pressure="VACUUM";section.temperature=-270;section.environment="UNMANAGED";}
+    if(section.panels.length){section.atmosphere=section.airtight?"PRESENT":"NONE";section.pressure=section.airtight?"OPTIMAL":"VACUUM";section.temperature=section.airtight?24:null;section.environment=section.airtight?"HABITABLE":"UNSEALED";}
+    else{section.atmosphere="NONE";section.pressure="VACUUM";section.temperature=null;section.environment="UNMANAGED";}
   }
   return result;
 }
