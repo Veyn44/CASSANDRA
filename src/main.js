@@ -6,22 +6,17 @@ import { startGameSession } from './app/session.js';
 import { createSessionLifecycle } from './app/session-lifecycle.js';
 import { exportShipLayout as exportShipLayoutFile } from './dev/ship-layout-exporter.js';
 const $ = (selector) => document.querySelector(selector);
-const menu = $('#main-menu'),
-  shell = $('#game-shell'),
+const shell = $('#game-shell'),
   options = $('#options-panel'),
-  devIndicator = $('#dev-indicator'),
   canvas = $('#game-canvas'),
   categories = $('#build-categories'),
   buildBtn = $('#build-menu-toggle'),
   materialBtn = $('#material-titanium'),
-  titaniumBuilds = $('#titanium-builds'),
   note = $('#construction-note'),
   gridBtn = $('#grid-toggle'),
   pauseMenu = $('#pause-menu'),
   leaveConfirm = $('#leave-confirm'),
-  devWrap = $('#dev-tools-wrap'),
-  devToolsMenu = $('#dev-tools-menu'),
-  astPanel = $('#ast-gen-panel');
+  devToolsMenu = $('#dev-tools-menu');
 let dev = false,
   state = null,
   renderer = null,
@@ -37,15 +32,6 @@ const { pause, resume, askLeave, returnToMenu } = createSessionLifecycle({
   setSectionsPanel: (value) => (sectionsPanel = value),
   getSectionsPanel: () => sectionsPanel,
 });
-const CATALOG_CATEGORIES = [
-  ['structure', 'STRUCTURE'],
-  ['access', 'ACCESS'],
-  ['core-systems', 'CORE SYSTEMS'],
-  ['power', 'POWER'],
-  ['material-processing', 'MATERIAL PROCESSING'],
-  ['crew-medical', 'CREW & MEDICAL'],
-  ['furniture', 'FURNITURE'],
-];
 function noteText(t) {
   note.textContent = t;
 }
