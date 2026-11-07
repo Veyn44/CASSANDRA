@@ -2,11 +2,9 @@ import { placePrefab, getBuildable } from '../systems/prefab-manager.js';
 import {
   completePlanAction,
   completeModuleAction,
-  findPath,
-  findWorkPath,
-  isBlocked,
   applyDamageAt,
 } from '../systems/turn-manager.js';
+import { findPath, findWorkPath, isBlocked } from '../systems/navigation.js';
 const key = (x, y) => x + ',' + y;
 export function bindInput(canvas, s, r, refresh, cancel, note, onControlPanelClick) {
   const controller = new AbortController();
