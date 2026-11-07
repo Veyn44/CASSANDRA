@@ -230,7 +230,7 @@ export function bindInput(canvas, s, r, refresh, cancel, note, onControlPanelCli
       refresh();
     });
   }
-  listen(canvas,'pointerdown', (e) => {
+  listen(canvas, 'pointerdown', (e) => {
     if (s.paused) return;
     if (e.button === 1) {
       pan = true;
@@ -284,7 +284,7 @@ export function bindInput(canvas, s, r, refresh, cancel, note, onControlPanelCli
       refresh();
     }
   });
-  listen(canvas,'pointermove', (e) => {
+  listen(canvas, 'pointermove', (e) => {
     if (s.paused) return;
     const p = tile(e.clientX, e.clientY);
     s.hoverTile = inside(p) ? p : null;
@@ -380,10 +380,11 @@ export function bindInput(canvas, s, r, refresh, cancel, note, onControlPanelCli
     painting = false;
     lastPainted = null;
   }
-  listen(canvas,'pointerup', stop);
-  listen(canvas,'pointercancel', stop);
-  listen(canvas,'contextmenu', (e) => e.preventDefault());
-  listen(canvas,
+  listen(canvas, 'pointerup', stop);
+  listen(canvas, 'pointercancel', stop);
+  listen(canvas, 'contextmenu', (e) => e.preventDefault());
+  listen(
+    canvas,
     'wheel',
     (e) => {
       if (s.paused) return;
@@ -425,7 +426,7 @@ export function bindInput(canvas, s, r, refresh, cancel, note, onControlPanelCli
     requestAnimationFrame(cameraFrame);
   }
   requestAnimationFrame(cameraFrame);
-  listen(window,'keydown', (e) => {
+  listen(window, 'keydown', (e) => {
     if (s.paused) return;
     const k = e.key.toLowerCase();
     if ((k === 'q' || k === 'e') && s.activeTool === 'prefab') {
@@ -438,5 +439,5 @@ export function bindInput(canvas, s, r, refresh, cancel, note, onControlPanelCli
     e.preventDefault();
     heldKeys.add(k);
   });
-  listen(window,'keyup', (e) => heldKeys.delete(e.key.toLowerCase()));
+  listen(window, 'keyup', (e) => heldKeys.delete(e.key.toLowerCase()));
 }
