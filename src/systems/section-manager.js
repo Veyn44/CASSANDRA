@@ -49,9 +49,9 @@ export function detectSections(s,{useSnapshot=true}={}){
    }else section.openBoundaries.push({x,y,door:null});
   }
   for(const item of boundary.values()){
-   if(item.integrity<50)section.criticalWalls.push(item);
+   if(item.door&&item.door.closed===false)section.openBoundaries.push({x:item.x,y:item.y,door:item.door});
+   else if(item.integrity<50)section.criticalWalls.push(item);
    else if(item.integrity<75)section.cautiousWalls.push(item);
-   else if(item.door&&!doorSeals(item.door))section.openBoundaries.push({x:item.x,y:item.y,door:item.door});
   }
   section.critical=section.criticalWalls.length>0||section.openBoundaries.length>0||section.locked;
   section.cautious=!section.critical&&section.cautiousWalls.length>0;
