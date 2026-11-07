@@ -1,8 +1,18 @@
 export function bindCameraControls(s, r, listen, signal) {
   const heldKeys = new Set();
   let lastFrame = 0;
+
+  listen(window, 'keydown', (e) => {
+    if (s.paused) return;
+    const key = e.key.toLowerCase();
+    if (!'wasd'.includes(key) || e.target instanceof HTMLInputElement) return;
+    e.preventDefault();
+    heldKeys.add(key);
+  });
+  listen(window, 'keyup', (e) => heldKeys.delete(e.key.toLowerCase()));
+
   function cameraFrame(ts) {
-    if (controller.signal.aborted) return;
+    if (signal.aborted) return;
     const dt = lastFrame ? Math.min((ts - lastFrame) / 1000, 0.05) : 0;
     lastFrame = ts;
     const speed = (8 * dt) / Math.max(0.55, s.camera.zoom);
@@ -30,5 +40,6 @@ export function bindCameraControls(s, r, listen, signal) {
     }
     requestAnimationFrame(cameraFrame);
   }
+
   requestAnimationFrame(cameraFrame);
 }
