@@ -1,5 +1,5 @@
 import { getBuildable } from '../systems/prefab-manager.js';
-import { applyDamageAt } from '../systems/construction-system.js';
+import { applyDamageAt } from '../systems/damage-system.js';
 import { isBlocked } from '../systems/navigation.js';
 import { bindCameraControls } from './camera-controls.js';
 import { createCommandExecutor } from './command-execution.js';
