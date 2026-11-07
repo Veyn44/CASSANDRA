@@ -1,4 +1,4 @@
-import { generateAsteroidForState } from '../systems/turn-manager.js';
+import { generateAsteroidForState } from '../world/asteroid-cluster-generator.js';
 export function bindDevPanel(state, refresh, note) {
   const panel = document.querySelector('#ast-gen-panel'),
     result = document.querySelector('#ast-gen-result');
