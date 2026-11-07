@@ -9,7 +9,7 @@ function separates(s,a,b){
   // Walls and doors occupy their own boundary tile. A door always preserves
   // section identity, regardless of its open/closed state.
   if(doorAt(s,a.x,a.y)||doorAt(s,b.x,b.y))return true;
-  return wallAt(s,a.x,a.y)||wallAt(s,b.x,b.y);
+  return Boolean(s.map.tiles[key(a.x,a.y)]?.aluminiumWall||s.map.tiles[key(b.x,b.y)]?.aluminiumWall);
 }
 function panelObjects(s){return Object.values(s.map.objects).filter(o=>o.type==="MOD0014"&&o.built!==false);}
 function sectionForPanel(s,panel,sections){
@@ -56,6 +56,10 @@ export function detectSections(s){
     const record={id:panel.id,name:panel.sectionName??section?.name??"UNASSIGNED",x:panel.x,y:panel.y,rotation:panel.rotation??0,sectionId:section?.id??null};
     if(section){section.panels.push(record);if(panel.sectionName)section.name=panel.sectionName;}
     result.panels.push(record);
+  }
+  for(const section of sections){
+    if(section.panels.length){section.atmosphere=section.airtight?"PRESENT":"NONE";section.pressure=section.airtight?"OPTIMAL":"VACUUM";section.temperature=section.airtight?24:-270;section.environment=section.airtight?"HABITABLE":"VACUUM";}
+    else{section.atmosphere="NONE";section.pressure="VACUUM";section.temperature=-270;section.environment="UNMANAGED";}
   }
   return result;
 }
