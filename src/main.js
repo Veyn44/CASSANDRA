@@ -1,3 +1,4 @@
+import { bindSectionsControls } from './ui/sections-controls.js';
 import { bindPauseControls } from './ui/pause-controls.js';
 import { bindGameplayControls } from './ui/gameplay-controls.js';
 import { renderBuildCatalog } from './ui/build-catalog.js';
@@ -64,10 +65,11 @@ function start(mode = 'normal') {
   const session = startGameSession(mode, { $, canvas, refresh, noteText });
   ({ dev, state, renderer, devPanel, sectionsPanel } = session);
 }
-$('#sections-toggle').onclick = () => {
-  if (!state || state.paused) return;
-  sectionsPanel?.toggle();
-};
+bindSectionsControls({
+  $,
+  getState: () => state,
+  getSectionsPanel: () => sectionsPanel,
+});
 bindDevControls({
   $,
   isDev: () => dev,
