@@ -6,6 +6,8 @@ export function createSessionLifecycle({
   setDevPanel,
   setSectionsPanel,
   getSectionsPanel,
+  getSessionCleanup,
+  setSessionCleanup,
 }) {
   function pause() {
     const state = getState();
@@ -32,6 +34,8 @@ export function createSessionLifecycle({
 
   function returnToMenu() {
     const state = getState();
+    getSessionCleanup()?.();
+    setSessionCleanup(null);
     if (state) state.paused = true;
     $('#leave-confirm').hidden = true;
     $('#game-shell').hidden = true;
