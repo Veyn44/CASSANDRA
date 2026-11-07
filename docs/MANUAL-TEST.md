@@ -27,6 +27,8 @@ The automated checks validate formatting, JavaScript syntax and relative import 
 - [ ] Open and close the build menu; switch categories and materials.
 - [ ] Place a hull plan, a wall plan and a prefab; verify the preview and resulting plans/objects appear at the selected coordinates.
 - [ ] Use the eraser to cancel a plan and mark an existing structure/module for demolition.
+- [ ] In DEV mode, damage a hull floor, hull wall, aluminium wall and door; confirm integrity decreases and the status message names the correct target.
+- [ ] Advance the turn; confirm the turn/day counter, environmental update and pawn operational points behave as before.
 - [ ] Toggle the grid and verify it redraws correctly.
 - [ ] Pan the camera with WASD and zoom with the mouse wheel.
 - [ ] Rotate a selected prefab with Q/E and verify the preview orientation changes.
