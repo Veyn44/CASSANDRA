@@ -130,7 +130,7 @@ export function advanceEnvironment(s){
  return data;
 }
 export function getVacuumInfo(){return{type:"VACUUM",name:"VACUUM SECTION",weight:1000000,atmosphere:"NONE",pressure:"VACUUM",temperature:-270,environment:"VACUUM",boundary:"EXTERNAL",airtightness:"N/A"};}
-export function getSectionInfo(section){if(!section)return null;return{type:"SECTION",id:section.id,name:section.name,weight:section.tileCount,atmosphere:section.atmosphere,pressure:section.pressure,temperature:section.temperature,environment:section.environment,airtightness:section.airtightness,precriticalWalls:section.precriticalWalls.length,criticalWalls:section.criticalWalls.length,activeTiles:section.tileCount,controlPanel:section.panels.map(p=>({id:p.id,status:p.status,reason:p.reason}))};}
+export function getSectionInfo(section){if(!section)return null;return{type:"SECTION",id:section.id,name:section.name,weight:section.tileCount,atmosphere:section.atmosphere,pressure:section.pressure,temperature:section.temperature,environment:section.environment,airtightness:section.airtightness,precriticalWalls:section.precriticalWallCount??section.precriticalWalls.length,criticalWalls:section.criticalWallCount??section.criticalWalls.length,activeTiles:section.tileCount,controlPanel:section.panels.map(p=>({id:p.id,status:p.status,reason:p.reason}))};}
 export function completeSectionScan(s,section){
  if(!section)return{ok:false,message:"NO SECTION SELECTED"};if(s.pawn.op<2)return{ok:false,message:"NOT ENOUGH AP · 2 AP REQUIRED"};
  const floors=section.tiles.map(p=>{const tile=s.map.tiles[key(p.x,p.y)];return{type:"HULL FLOOR",x:p.x,y:p.y,integrity:tile.integrity??100};}),walls=new Map();
