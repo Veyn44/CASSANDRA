@@ -4,8 +4,8 @@ export { isBlocked, findPath, findWorkPath } from './navigation.js';
 export {
   completePlanAction,
   completeModuleAction,
-  applyDamageAt,
-  endTurn,
 } from './construction-system.js';
+export { applyDamageAt } from './damage-system.js';
+export { endTurn } from './turn-lifecycle.js';
 
 export { generateAsteroidForState } from '../world/asteroid-cluster-generator.js';
