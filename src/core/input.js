@@ -393,6 +393,15 @@ export function bindInput(canvas, s, r, refresh, cancel, note, onControlPanelCli
     },
     { passive: false }
   );
-  bindCameraControls(s, r, listen, controller.signal);
+  listen(window, 'keydown', (e) => {
+    if (s.paused) return;
+    const key = e.key.toLowerCase();
+    if ((key === 'q' || key === 'e') && s.activeTool === 'prefab') {
+      e.preventDefault();
+      s.rotation = (s.rotation + (key === 'q' ? 3 : 1)) % 4;
+      r.draw();
+    }
+  });
+    bindCameraControls(s, r, listen, controller.signal);
   return () => controller.abort();
 }
