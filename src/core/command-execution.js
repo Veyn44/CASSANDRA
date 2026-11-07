@@ -1,4 +1,4 @@
-import { completePlanAction, completeModuleAction } from '../systems/turn-manager.js';
+import { completePlanAction, completeModuleAction } from '../systems/construction-system.js';
 import { findPath, findWorkPath, isBlocked } from '../systems/navigation.js';
 
 const key = (x, y) => x + ',' + y;
