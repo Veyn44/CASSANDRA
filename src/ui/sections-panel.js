@@ -15,7 +15,7 @@ export function createSectionsPanel(root,s,onChange){
     const width=Math.max(1,maxX-minX+1),height=Math.max(1,maxY-minY+1),grid=[];
     for(let y=minY;y<=maxY;y++)for(let x=minX;x<=maxX;x++){
       const id=data.tileToSection[x+","+y],tile=s.map.tiles[x+","+y],panel=panels.find(p=>p.x===x&&p.y===y);
-      if(!tile?.hull){grid.push('<button class="section-map-cell vacuum-cell" data-vacuum="1" title="VACUUM"></button>');continue;}
+      if(!tile?.hull){if(data.vacuumSet.has(x+","+y))grid.push('<button class="section-map-cell vacuum-cell" data-vacuum="1" title="VACUUM"></button>');else grid.push('<div class="section-map-cell unclassified-cell" title="UNCLASSIFIED SPACE"></div>');continue;}
       if(tile.wall||tile.aluminiumWall){grid.push('<div class="section-map-cell boundary-cell '+(tile.aluminiumWall?"aluminium-boundary":"hull-boundary")+'" title="'+(tile.aluminiumWall?"ALUMINIUM WALL":"HULL WALL")+'"></div>');continue;}
       const cls=id===s.sectionsUi.selectedSectionId?"selected":id?"section-cell":"unassigned";
       grid.push('<button class="section-map-cell '+cls+'" data-section="'+esc(id??"")+'" title="'+esc(id??"UNASSIGNED")+'">'+(panel?"⌖":"")+'</button>');
