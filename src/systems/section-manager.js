@@ -13,7 +13,7 @@ function separates(s,a,b){
 }
 function panelObjects(s){return Object.values(s.map.objects).filter(o=>o.type==="MOD0014"&&o.built!==false);}
 function sectionForPanel(s,panel,sections){
-  const adjacent=[[1,0],[-1,0],[0,1],[0,-1]].map(([dx,dy])=>sections.tileToSection[key(panel.x+dx,panel.y+dy)]).filter(Boolean);
+  const adjacent=[sections.tileToSection[key(panel.x,panel.y)],...[[1,0],[-1,0],[0,1],[0,-1]].map(([dx,dy])=>sections.tileToSection[key(panel.x+dx,panel.y+dy)])].filter(Boolean);
   return adjacent.length?sections.byId[adjacent[0]]??null:null;
 }
 
