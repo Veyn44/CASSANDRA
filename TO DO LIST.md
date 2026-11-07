@@ -422,8 +422,10 @@ These rules were explicitly approved and are now the implementation target. They
 - **CAUTIOUS:** 74–50% integrity. The affected section loses exactly one pressure level on entry (for example OPTIMAL → LOW), not one level every turn. Temperature begins leaking. Aluminium components inside that section degrade by a random 2–10% per completed turn while it remains CAUTIOUS.
 - **CRITICAL:** 49–25% integrity. If any one boundary tile or boundary door in a section falls below 50%, the entire section changes to NONE / VACUUM (−270 °C) in that same NEXT TURN calculation. Integrity then stops at 25%.
 - **Locality:** Vacuum and aluminium degradation effects are confined to the affected section; intact boundaries prevent the effect from propagating into another section.
-- **Doors:** STR0002/STR0003 are Titanium Doors; STR0004/STR0005 are Aluminium Doors. Both seal against vacuum while closed and at 75% integrity or higher. Both use the same CAUTIOUS/CRITICAL integrity thresholds. An open door is an immediate open boundary.
-- **Door materials:** Titanium Doors use titanium; Aluminium Doors use aluminium. Door integrity is tracked as a component integrity value.
+- **Boundary aluminium degradation:** Aluminium Walls and Aluminium Doors on a section boundary degrade by a random 2–10% per completed turn when exposed to an adjacent LOW-pressure or VACUUM section. LOW pressure is sufficient; degradation must not wait for full vacuum.
+- **Interior aluminium degradation:** Aluminium components inside a CAUTIOUS section continue to degrade by a random 2–10% per completed turn.
+- **Door degradation:** STR0004/STR0005 Aluminium Doors degrade under the same boundary exposure rule as Aluminium Walls. STR0002/STR0003 Titanium Doors do not degrade from environmental LOW-pressure or vacuum exposure. Both door materials still use the same integrity thresholds for sealing and section-state changes. An open door is an immediate open boundary.
+- **Door materials:** Titanium Doors use titanium; Aluminium Doors use aluminium. Door integrity is tracked as airtightness/sealing integrity, not hit points or physical material loss.
 - **Testing:** The initial ship geometry and JSON export remain unchanged. The next verification is New Game initialization and NEXT TURN behaviour on the completed Cassandra layout.
 
 ---
