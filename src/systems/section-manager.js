@@ -64,6 +64,8 @@ export function detectSections(s){
   else if(section.precriticalWalls.length){section.atmosphere=active?"NOT OPTIMAL":"NONE";section.pressure=active?"LOW":"VACUUM";section.environment="PRECRITICAL";}
   else if(active){section.atmosphere="OPTIMAL";section.pressure="OPTIMAL";section.temperature=24;section.environment="HABITABLE";}
   else{section.atmosphere="NONE";section.pressure="VACUUM";section.temperature=null;section.environment="UNMANAGED";}
+  const saved=s.environmentState?.[signature(section.tiles)];
+  if(section.precriticalWalls.length&&Number.isFinite(saved?.temperature))section.temperature=saved.temperature;
  }
  return result;
 }
