@@ -1,4 +1,4 @@
-import { endTurn } from '../systems/construction-system.js';
+import { endTurn } from '../systems/turn-lifecycle.js';
 
 export function bindGameplayControls({
   $,
