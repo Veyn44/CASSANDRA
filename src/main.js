@@ -24,6 +24,7 @@ let dev = false,
   renderer = null,
   devPanel = null,
   sectionsPanel = null,
+  disposeSession = null,
   activeCategory = 'core-systems';
 const { pause, resume, askLeave, returnToMenu } = createSessionLifecycle({
   $,
@@ -33,6 +34,8 @@ const { pause, resume, askLeave, returnToMenu } = createSessionLifecycle({
   setDevPanel: (value) => (devPanel = value),
   setSectionsPanel: (value) => (sectionsPanel = value),
   getSectionsPanel: () => sectionsPanel,
+  getSessionCleanup: () => disposeSession,
+  setSessionCleanup: (value) => (disposeSession = value),
 });
 function noteText(t) {
   note.textContent = t;
@@ -63,7 +66,7 @@ bindMenuControls({ $, startGame: (mode) => start(mode) });
 
 function start(mode = 'normal') {
   const session = startGameSession(mode, { $, canvas, refresh, noteText });
-  ({ dev, state, renderer, devPanel, sectionsPanel } = session);
+  ({ dev, state, renderer, devPanel, sectionsPanel, dispose: disposeSession } = session);
 }
 bindSectionsControls({
   $,
