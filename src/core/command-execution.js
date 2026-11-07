@@ -2,11 +2,12 @@ import {
   completePlanAction,
   completeModuleAction,
 } from '../systems/turn-manager.js';
-import { findPath, findWorkPath } from '../systems/navigation.js';
+import { findPath, findWorkPath, isBlocked } from '../systems/navigation.js';
 
 const key = (x, y) => x + ',' + y;
 
-export function createCommandExecutor(s, refresh, note, objectAt) {
+export function createCommandExecutor(s, refresh, note, objectAt, signal) {
+  const inside = (p) => p.x >= 0 && p.y >= 0 && p.x < 256 && p.y < 128;
 function walk(path, done) {
   if (!path || !path.length) {
     note('NO ACCESSIBLE PATH');
@@ -19,7 +20,7 @@ function walk(path, done) {
   s.pawn.moving = true;
   let i = 1;
   const step = () => {
-    if (controller.signal.aborted) return;
+    if (signal.aborted) return;
     if (i >= path.length) {
       s.pawn.moving = false;
       refresh();
