@@ -1,5 +1,7 @@
 const base = { stats: {}, attributes: {}, requirements: {}, systems: {}, defaultMaterialFamily: "titanium" };
 
+export const ALUMINIUM_WALL = { id: "STR0006", legacyId: "aluminium-wall", name: "Aluminium Wall", category: "structure", subcategory: "internal-wall", type: "structure", w: 1, h: 1, description: "Thick structural aluminium wall. Integrity is tracked independently from the Hull.", function: "Internal structural wall", placement: "hull", integrityRange: [0, 100], defaultMaterialFamily: "aluminium" };
+
 export const STRUCTURES = [
   { ...base, id: "STR0001", legacyId: "external-frame", name: "External Frame", category: "structure", subcategory: "external-support", type: "structure", w: 1, h: 1, description: "Lightweight external mounting structure. Not a floor or wall.", function: "External equipment support", placement: "external-frame" },
   { ...base, id: "STR0002", legacyId: "airtight-door-1x1", name: "Airtight Door 1×1", category: "access", subcategory: "airtight", type: "door", w: 1, h: 1, description: "Pressure-sealing passage integrated into a wall.", function: "Airtight passage", placement: "wall-opening", airtight: true },
