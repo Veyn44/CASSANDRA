@@ -8,6 +8,7 @@ $('#confirm-leave-no').onclick = () => {
 };
 window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
+    const state = getState();
     if (!leaveConfirm.hidden) {
       leaveConfirm.hidden = true;
       pauseMenu.hidden = false;
