@@ -12,7 +12,7 @@ export function startGameSession(mode, { $, canvas, refresh, noteText }) {
   const renderer = createRenderer(canvas, state);
   let sectionsPanel = null;
 
-  bindInput(
+  const disposeInput = bindInput(
     canvas,
     state,
     renderer,
@@ -51,5 +51,5 @@ export function startGameSession(mode, { $, canvas, refresh, noteText }) {
     refresh();
   });
 
-  return { dev, state, renderer, devPanel, sectionsPanel };
+  return { dev, state, renderer, devPanel, sectionsPanel, dispose: disposeInput };
 }
