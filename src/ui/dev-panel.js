@@ -26,41 +26,6 @@ export function bindDevPanel(state, refresh, note) {
     params.cavitySizePercent <= 30 &&
     params.cavityCount >= 0 &&
     params.cavityCount <= 20;
-  const generate = (params, attempts) => {
-    try {
-      const body = generateAsteroidForState(state, params);
-      if (
-        !body ||
-        !Array.isArray(body.cells) ||
-        !body.cells.length ||
-        !Array.isArray(body.solidCells) ||
-        !body.solidCells.length ||
-        !Array.isArray(body.bodies) ||
-        body.bodies.length !== params.bodyCount ||
-        !body.majorBody ||
-        !Number.isFinite(body.generationArea?.radius)
-      )
-        throw new Error('INCOMPLETE ASTEROID CLUSTER');
-      result.textContent =
-        'GENERATED · ATTEMPTS: ' +
-        attempts +
-        ' · SEED: ' +
-        params.seed +
-        ' · ' +
-        body.occupiedTileCount +
-        ' ROCK TILES · ' +
-        body.cavityTileCount +
-        ' CAVITY GROUND · ' +
-        body.bodyCount +
-        ' BODIES · RADIUS ' +
-        body.generationArea.radius;
-      note('ASTEROID CLUSTER GENERATED · ' + attempts + ' ATTEMPTS · SEED ' + params.seed);
-      refresh();
-      return true;
-    } catch (error) {
-      return false;
-    }
-  };
   document.querySelector('#generate-asteroid').onclick = () => {
     const params = collectParams();
     if (!validParams(params)) {
@@ -106,7 +71,6 @@ export function bindDevPanel(state, refresh, note) {
     }
   };
   document.querySelector('#generate-next-asteroid').onclick = () => {
-    const base = collectParams();
     let lastError = 'NO VALID RESULT';
     for (let attempt = 1; attempt <= 50; attempt++) {
       const params = {
