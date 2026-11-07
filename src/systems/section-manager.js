@@ -76,6 +76,7 @@ export function completeSectionScan(s,section){
   if(s.pawn.op<2)return{ok:false,message:"NOT ENOUGH AP · 2 AP REQUIRED"};
   const tiles=section.tiles.map(p=>{const t=s.map.tiles[key(p.x,p.y)];return{type:"HULL FLOOR",x:p.x,y:p.y,integrity:t.integrity??100};});
   const adjacent=new Map();
+  for(const p of section.tiles){const own=s.map.tiles[key(p.x,p.y)];if(own?.wall||own?.aluminiumWall)adjacent.set(key(p.x,p.y),{type:own.aluminiumWall?"ALUMINIUM WALL":"HULL WALL",x:p.x,y:p.y,integrity:own.aluminiumWall?(own.aluminiumWallIntegrity??100):(own.wallIntegrity??100)});}
   const scanDirs=[[-1,-1],[0,-1],[1,-1],[-1,0],[1,0],[-1,1],[0,1],[1,1]];
   for(const p of section.tiles)for(const [dx,dy] of scanDirs){
     const x=p.x+dx,y=p.y+dy,t=s.map.tiles[key(x,y)];
