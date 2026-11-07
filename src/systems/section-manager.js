@@ -124,7 +124,7 @@ function unlockSectionDoors(s,section){
  const cells=new Set(section.tiles.map(p=>key(p.x,p.y)));
  for(const door of Object.values(s.map.objects)){if(!DOOR_TYPES.has(door.type)||door.built===false)continue;let touches=false;for(let y=door.y;y<door.y+door.h;y++)for(let x=door.x;x<door.x+door.w;x++)for(const[dx,dy]of DIRS)if(cells.has(key(x+dx,y+dy)))touches=true;if(touches)door.locked=false;}
 }
-export function advanceEnvironment(s){
+export function advanceEnvironment(s,{initial=false}={}){
  s.environmentState??={};
  const before=detectSections(s,{useSnapshot:false});
  // Exterior aluminium walls continue to erode only where they directly contact vacuum.
