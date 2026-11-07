@@ -46,7 +46,8 @@ export function detectSections(s){
       const boundaryTile=s.map.tiles[key(p.x,p.y)];
       const hasHullWall=Boolean(boundaryTile?.wall||nt?.wall);
       const door=Object.values(s.map.objects).find(o=>o.family==="STR"&&["STR0002","STR0003"].includes(o.type)&&o.built!==false&&nx>=o.x&&ny>=o.y&&nx<o.x+o.w&&ny<o.y+o.h);
-      if(!hasHullWall&&!(door&&door.closed!==false)){section.airtight=false;break outer;}
+      const sealedBoundary=door?door.closed!==false:hasHullWall;
+      if(!sealedBoundary){section.airtight=false;break outer;}
     }
     if(!section.airtight){section.atmosphere="NONE";section.pressure="VACUUM";section.temperature=-270;section.environment="VACUUM";}
   }
