@@ -10,6 +10,7 @@ function wallIntegrity(tile){return tile?.aluminiumWall?(tile.aluminiumWallInteg
 function isWall(tile){return Boolean(tile?.wall||tile?.aluminiumWall);}
 function doorIntegrity(door){return door?.integrity??100;}
 function doorSeals(door){return Boolean(door&&door.closed!==false&&doorIntegrity(door)>=75);}
+function lowerPressureOnce(pressure){const index=PRESSURE_STATES.indexOf(pressure??"OPTIMAL");return PRESSURE_STATES[Math.max(0,index<0?1:index-1)];}
 function vacuumArea(s){
  const hull=Object.entries(s.map.tiles).filter(([,t])=>t?.hull).map(([k])=>k.split(",").map(Number));
  if(!hull.length)return new Set();
@@ -139,7 +140,7 @@ export function advanceEnvironment(s,{initial=false}={}){
    section.atmosphere="NONE";section.pressure="VACUUM";section.temperature=-270;section.environment="CRITICAL";section.locked=true;closeSectionDoors(s,section);
   }else if(section.cautious){
    section.atmosphere=section.hasActivePanel?"NOT OPTIMAL":"NONE";
-   section.pressure=section.hasActivePanel?(prior.pressure==="OPTIMAL"?"LOW":prior.pressure??"LOW"):"VACUUM";
+   section.pressure=section.hasActivePanel?(prior.environment==="CAUTIOUS"?(prior.pressure??"LOW"):lowerPressureOnce(prior.pressure)):"VACUUM";
    section.environment="CAUTIOUS";
    const base=Number.isFinite(prior.temperature)?prior.temperature:(section.hasActivePanel?24:null);
    section.temperature=base==null?null:Math.max(-270,base-29*counts.vacuumTiles-1.2*counts.internalTiles);
