@@ -42,7 +42,8 @@ export function validatePrefabPlacement(s, id, x, y, rotation = s.rotation) {
     const occupyingObjects = objects.filter(o => tx >= o.x && ty >= o.y && tx < o.x + o.w && ty < o.y + o.h);
     if (occupyingObjects.some(o => !(item.outer && o.type === "STR0001"))) return { valid: false, message: "TILE BLOCKED" };
     if (item.placement === "control-panel") {
-      const adjacentAluminium = [[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy]) => s.map.tiles[(tx+dx)+","+(ty+dy)]?.aluminiumWall);
+      const panelDirections=[[0,-1],[1,0],[0,1],[-1,0]],direction=panelDirections[rotation%4];
+      const adjacentAluminium = Boolean(s.map.tiles[(tx+direction[0])+","+(ty+direction[1])]?.aluminiumWall);
       if (!tile?.hull || tile.wall || tile.aluminiumWall) return { valid: false, message: "CONTROL PANEL REQUIRES AN OPEN HULL TILE" };
       if (!adjacentAluminium) return { valid: false, message: "CONTROL PANEL MUST BE ADJACENT TO AN ALUMINIUM WALL" };
       const detected=detectSections(s),sectionId=detected.tileToSection[tx+","+ty];
