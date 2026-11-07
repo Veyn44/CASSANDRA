@@ -51,5 +51,14 @@ export function startGameSession(mode, { $, canvas, refresh, noteText }) {
     refresh();
   });
 
-  return { dev, state, renderer, devPanel, sectionsPanel, dispose: disposeInput };
+  function dispose() {
+    disposeInput();
+    devPanel?.close();
+    $('#ast-gen-panel').hidden = true;
+    $('#generate-asteroid').onclick = null;
+    $('#generate-next-asteroid').onclick = null;
+    sectionsPanel?.close();
+  }
+
+  return { dev, state, renderer, devPanel, sectionsPanel, dispose };
 }
