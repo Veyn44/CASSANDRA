@@ -23,7 +23,7 @@ export function createInitialState({mode="normal"}={}){
   "build-2":{id:"build-2",type:"MOD0002",family:"MOD",x:63,y:63,w:2,h:2,rotation:0,built:true,materialFamily:"titanium"},
   "build-3":{id:"build-3",type:"STR0003",family:"STR",x:66,y:63,w:1,h:2,rotation:3,built:true,materialFamily:"titanium"},
   "build-14":{id:"build-14",type:"STR0003",family:"STR",x:68,y:63,w:1,h:2,rotation:3,built:true,materialFamily:"titanium"},
-  "build-9":{id:"build-9",type:"STR0005",family:"STR",x:74,y:63,w:1,h:2,rotation:3,built:true,materialFamily:"titanium"},
+  "build-9":{id:"build-9",type:"STR0005",family:"STR",x:74,y:63,w:1,h:2,rotation:3,built:true,materialFamily:"aluminium",integrity:100},
   "build-7":{id:"build-7",type:"MOD0005",family:"MOD",x:81,y:63,w:2,h:2,rotation:0,built:true,materialFamily:"titanium"},
   "build-15":{id:"build-15",type:"MOD0011",family:"MOD",x:81,y:65,w:2,h:1,rotation:0,built:true,materialFamily:"titanium"},
   "build-11":{id:"build-11",type:"STR0002",family:"STR",x:77,y:66,w:1,h:1,rotation:0,built:true,materialFamily:"titanium"},
