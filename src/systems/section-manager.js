@@ -51,7 +51,19 @@ export function detectSections(s){
     }
     if(!section.airtight){section.atmosphere="NONE";section.pressure="VACUUM";section.temperature=null;section.environment="UNSEALED";}
   }
-  const result={sections,byId,tileToSection,panels:[]};
+  const occupied=Object.keys(s.map.tiles).filter(k=>s.map.tiles[k]?.hull);
+  const coords=occupied.map(k=>k.split(",").map(Number));
+  const minX=Math.min(...coords.map(p=>p[0]))-2,maxX=Math.max(...coords.map(p=>p[0]))+2,minY=Math.min(...coords.map(p=>p[1]))-2,maxY=Math.max(...coords.map(p=>p[1]))+2;
+  const vacuumSet=new Set(),vacuumQueue=[];
+  for(let x=minX;x<=maxX;x++){vacuumQueue.push({x,y:minY},{x,y:maxY});}
+  for(let y=minY+1;y<maxY;y++){vacuumQueue.push({x:minX,y},{x:maxX,y});}
+  for(let i=0;i<vacuumQueue.length;i++){
+    const p=vacuumQueue[i],k=key(p.x,p.y);
+    if(vacuumSet.has(k)||s.map.tiles[k]?.hull)continue;
+    vacuumSet.add(k);
+    for(const [dx,dy] of DIRS){const nx=p.x+dx,ny=p.y+dy;if(nx<minX||nx>maxX||ny<minY||ny>maxY)continue;const nk=key(nx,ny);if(!vacuumSet.has(nk)&&!s.map.tiles[nk]?.hull)vacuumQueue.push({x:nx,y:ny});}
+  }
+  const result={sections,byId,tileToSection,panels:[],vacuumSet};
   for(const panel of panelObjects(s)){
     const section=sectionForPanel(s,panel,result);
     const record={id:panel.id,name:panel.sectionName??section?.name??"UNASSIGNED",x:panel.x,y:panel.y,rotation:panel.rotation??0,sectionId:section?.id??null};
