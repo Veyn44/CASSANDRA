@@ -10,7 +10,6 @@ import { getBuildable } from './prefab-manager.js';
 import { generateCosmicBody } from './cosmic-body-generator.js';
 import { createVisibility } from './visibility-manager.js';
 import { advanceEnvironment } from './section-manager.js';
-import { isBlocked } from './navigation.js';
 export function createInitialState({ mode = 'normal' } = {}) {
   const tiles = {};
   const hullRows = {
