@@ -127,8 +127,8 @@ function unlockSectionDoors(s,section){
 export function advanceEnvironment(s,{initial=false}={}){
  s.environmentState??={};
  const before=detectSections(s,{useSnapshot:false});
- // Exterior aluminium walls continue to erode only where they directly contact vacuum.
- for(const[k,tile]of Object.entries(s.map.tiles)){if(!tile?.aluminiumWall)continue;const[x,y]=k.split(",").map(Number);
+ // Exterior aluminium walls erode only during completed turns, never during New Game initialization.
+ if(!initial)for(const[k,tile]of Object.entries(s.map.tiles)){if(!tile?.aluminiumWall)continue;const[x,y]=k.split(",").map(Number);
   const exposed=DIRS.some(([dx,dy])=>{const nx=x+dx,ny=y+dy,nk=key(nx,ny);if(before.vacuumSet.has(nk))return true;const id=before.tileToSection[nk];return Boolean(id&&before.byId[id]?.pressure==="VACUUM");});
   if(exposed){const damage=2+Math.floor(Math.random()*9);tile.aluminiumWallIntegrity=Math.max(25,(tile.aluminiumWallIntegrity??100)-damage);}
  }
