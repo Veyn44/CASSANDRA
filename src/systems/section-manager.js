@@ -43,14 +43,14 @@ export function detectSections(s){
   for(const p of section.tiles)for(const[dx,dy]of DIRS){const x=p.x+dx,y=p.y+dy,k=key(x,y);if(own.has(k))continue;
    const tile=s.map.tiles[k],door=doorAt(s,x,y);
    if(isWall(tile)){boundary.set(k,{x,y,tile,integrity:wallIntegrity(tile),kind:tile.aluminiumWall?"ALUMINIUM WALL":"TITANIUM WALL"});}
-   else if(isAirtightDoor(door)){/* closed airtight door seals this edge */}
+   else if(isAirtightDoor(door)){if(door.locked)section.locked=true;}
    else section.openBoundaries.push({x,y,door});
   }
   for(const item of boundary.values()){
    if(item.integrity<=49)section.criticalWalls.push(item);
    else if(item.integrity<=74)section.precriticalWalls.push(item);
   }
-  section.critical=section.criticalWalls.length>0||section.openBoundaries.length>0;
+  section.critical=section.criticalWalls.length>0||section.openBoundaries.length>0||section.locked;
   section.airtight=!section.critical&&!section.precriticalWalls.length;
   section.airtightness=section.critical?"CRITICAL":section.precriticalWalls.length?"PRECRITICAL":"STABLE";
  }
