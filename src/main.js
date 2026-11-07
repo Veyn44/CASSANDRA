@@ -1,6 +1,7 @@
 import { endTurn } from './systems/turn-manager.js';
 import { renderBuildCatalog } from './ui/build-catalog.js';
 import { renderHud } from './ui/hud.js';
+import { bindMenuControls } from './ui/menu-controls.js';
 import { startGameSession } from './app/session.js';
 import { createSessionLifecycle } from './app/session-lifecycle.js';
 import { exportShipLayout as exportShipLayoutFile } from './dev/ship-layout-exporter.js';
@@ -70,6 +71,8 @@ function exportShipLayout() {
   exportShipLayoutFile(state, noteText);
 }
 
+bindMenuControls({ $, startGame: (mode) => start(mode) });
+
 function start(mode = 'normal') {
   const session = startGameSession(mode, { $, canvas, refresh, noteText });
   ({ dev, state, renderer, devPanel, sectionsPanel } = session);
@@ -78,21 +81,6 @@ $('#sections-toggle').onclick = () => {
   if (!state || state.paused) return;
   sectionsPanel?.toggle();
 };
-$('#modules-tab').onclick = () => {
-  const drawer = $('#module-drawer');
-  drawer.hidden = !drawer.hidden;
-  $('#modules-tab').classList.toggle('selected', !drawer.hidden);
-  categories.hidden = true;
-  buildBtn.classList.remove('selected');
-};
-$('#close-module-drawer').onclick = () => {
-  $('#module-drawer').hidden = true;
-  $('#modules-tab').classList.remove('selected');
-};
-$('#new-game').onclick = () => start('normal');
-$('#dev-new-game').onclick = () => start('dev');
-$('#open-options').onclick = () => (options.hidden = false);
-$('#options-back').onclick = () => (options.hidden = true);
 $('#dev-tools-button').onclick = () => {
   devToolsMenu.hidden = !devToolsMenu.hidden;
   $('#dev-tools-button').setAttribute('aria-expanded', String(!devToolsMenu.hidden));
