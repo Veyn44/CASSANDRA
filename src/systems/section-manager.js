@@ -9,7 +9,6 @@ function isFloor(s,x,y,tile=s.map.tiles[key(x,y)]){return Boolean(tile?.hull&&!t
 function wallIntegrity(tile){return tile?.aluminiumWall?(tile.aluminiumWallIntegrity??100):(tile?.wall?(tile.wallIntegrity??100):null);}
 function isWall(tile){return Boolean(tile?.wall||tile?.aluminiumWall);}
 function doorIntegrity(door){return door?.integrity??100;}
-function doorSeals(door){return Boolean(door&&door.closed!==false&&doorIntegrity(door)>=75);}
 function lowerPressureOnce(pressure){const index=PRESSURE_STATES.indexOf(pressure??"OPTIMAL");return PRESSURE_STATES[Math.max(0,index<0?1:index-1)];}
 function vacuumArea(s){
  const hull=Object.entries(s.map.tiles).filter(([,t])=>t?.hull).map(([k])=>k.split(",").map(Number));
