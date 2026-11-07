@@ -2,6 +2,7 @@ import { endTurn } from './systems/turn-manager.js';
 import { renderBuildCatalog } from './ui/build-catalog.js';
 import { renderHud } from './ui/hud.js';
 import { startGameSession } from './app/session.js';
+import { createSessionLifecycle } from './app/session-lifecycle.js';
 import { exportShipLayout as exportShipLayoutFile } from './dev/ship-layout-exporter.js';
 const $ = (selector) => document.querySelector(selector);
 const menu = $('#main-menu'),
@@ -26,6 +27,15 @@ let dev = false,
   devPanel = null,
   sectionsPanel = null,
   activeCategory = 'core-systems';
+const { pause, resume, askLeave, returnToMenu } = createSessionLifecycle({
+  $,
+  getState: () => state,
+  setState: (value) => (state = value),
+  setRenderer: (value) => (renderer = value),
+  setDevPanel: (value) => (devPanel = value),
+  setSectionsPanel: (value) => (sectionsPanel = value),
+  getSectionsPanel: () => sectionsPanel,
+});
 const CATALOG_CATEGORIES = [
   ['structure', 'STRUCTURE'],
   ['access', 'ACCESS'],
@@ -63,34 +73,6 @@ function exportShipLayout() {
 function start(mode = 'normal') {
   const session = startGameSession(mode, { $, canvas, refresh, noteText });
   ({ dev, state, renderer, devPanel, sectionsPanel } = session);
-}
-function pause() {
-  if (!state || shell.hidden) return;
-  sectionsPanel?.close();
-  state.paused = true;
-  pauseMenu.hidden = false;
-  devToolsMenu.hidden = true;
-  $('#module-drawer').hidden = true;
-  astPanel.hidden = true;
-}
-function resume() {
-  state.paused = false;
-  pauseMenu.hidden = true;
-}
-function askLeave() {
-  pauseMenu.hidden = true;
-  leaveConfirm.hidden = false;
-}
-function returnToMenu() {
-  state.paused = true;
-  leaveConfirm.hidden = true;
-  shell.hidden = true;
-  menu.hidden = false;
-  options.hidden = true;
-  state = null;
-  renderer = null;
-  devPanel = null;
-  sectionsPanel = null;
 }
 $('#sections-toggle').onclick = () => {
   if (!state || state.paused) return;
