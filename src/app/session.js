@@ -12,12 +12,22 @@ export function startGameSession(mode, { $, canvas, refresh, noteText }) {
   const renderer = createRenderer(canvas, state);
   let sectionsPanel = null;
 
-  bindInput(canvas, state, renderer, refresh, () => {
-    state.activeTool = null;
-    document.querySelectorAll('[data-tool]').forEach((button) => button.classList.remove('active'));
-    $('#erase-tool').classList.remove('selected');
-    refresh();
-  }, noteText, (panel) => sectionsPanel?.selectPanel(panel.id));
+  bindInput(
+    canvas,
+    state,
+    renderer,
+    refresh,
+    () => {
+      state.activeTool = null;
+      document
+        .querySelectorAll('[data-tool]')
+        .forEach((button) => button.classList.remove('active'));
+      $('#erase-tool').classList.remove('selected');
+      refresh();
+    },
+    noteText,
+    (panel) => sectionsPanel?.selectPanel(panel.id)
+  );
 
   const devPanel = dev ? bindDevPanel(state, refresh, noteText) : null;
   sectionsPanel = createSectionsPanel($('#sections-panel'), state, (message) => {
