@@ -414,7 +414,7 @@ These are the currently agreed design decisions. Do not silently change them dur
 
 - [x] Four-phase roadmap agreed with the user.
 - [x] Complete initial plan drafted for this document.
-- [ ] Create this document in the repository and verify it by fetching it back.
+- [x] Create this document in the repository and verify it by fetching it back.
 - [ ] Phase 1 — Vacuum & Ideal Life-Support Environment: **IN PROGRESS**.
 - [ ] Phase 2 — Section Detection & Control Panel: PENDING.
 - [ ] Phase 3 — Construction Catalogue, Energy & Module Systems: PENDING.
