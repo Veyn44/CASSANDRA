@@ -11,7 +11,7 @@ export function createSectionsPanel(root,s,onChange){
     const data=detectSections(s),selected=data.byId[s.sectionsUi.selectedSectionId]??null,info=selected?getSectionInfo(selected):getVacuumInfo();
     const panels=data.panels;
     const allTiles=Object.entries(s.map.tiles).filter(([,t])=>t?.hull).map(([k])=>k.split(",").map(Number));
-    const minX=Math.min(...allTiles.map(p=>p[0]),0)-2,maxX=Math.max(...allTiles.map(p=>p[0]),0)+2,minY=Math.min(...allTiles.map(p=>p[1]),0)-2,maxY=Math.max(...allTiles.map(p=>p[1]),0)+2;
+    const minX=Math.min(...allTiles.map(p=>p[0]))-2,maxX=Math.max(...allTiles.map(p=>p[0]))+2,minY=Math.min(...allTiles.map(p=>p[1]))-2,maxY=Math.max(...allTiles.map(p=>p[1]))+2;
     const width=Math.max(1,maxX-minX+1),height=Math.max(1,maxY-minY+1),grid=[];
     for(let y=minY;y<=maxY;y++)for(let x=minX;x<=maxX;x++){
       const id=data.tileToSection[x+","+y],tile=s.map.tiles[x+","+y],panel=panels.find(p=>p.x===x&&p.y===y);
