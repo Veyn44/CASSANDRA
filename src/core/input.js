@@ -440,4 +440,5 @@ export function bindInput(canvas, s, r, refresh, cancel, note, onControlPanelCli
     heldKeys.add(k);
   });
   listen(window, 'keyup', (e) => heldKeys.delete(e.key.toLowerCase()));
+  return () => controller.abort();
 }
