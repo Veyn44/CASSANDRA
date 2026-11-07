@@ -136,7 +136,7 @@ export function bindInput(canvas, s, r, refresh, cancel, note, onControlPanelCli
     }
     refresh();
   }
-  const executeCommand = createCommandExecutor(s, refresh, note, objectAt);
+  const executeCommand = createCommandExecutor(s, refresh, note, objectAt, controller.signal);
   listen(canvas, 'pointerdown', (e) => {
     if (s.paused) return;
     if (e.button === 1) {
