@@ -31,12 +31,8 @@ for (const filePath of sourceFiles) {
 
   for (const [, specifier] of specifiers) {
     if (!specifier.startsWith('.')) continue;
-
     const target = path.resolve(path.dirname(filePath), specifier);
-    const candidates = path.extname(target)
-      ? [target]
-      : [target, \`\${target}.js\`, path.join(target, 'index.js')];
-
+    const candidates = path.extname(target) ? [target] : [target, target + '.js', path.join(target, 'index.js')];
     if (!(await Promise.all(candidates.map(exists))).some(Boolean)) {
       failures.push({ file: path.relative(root, filePath), import: specifier });
     }
@@ -45,10 +41,8 @@ for (const filePath of sourceFiles) {
 
 if (failures.length) {
   console.error('Unresolved relative imports:');
-  for (const failure of failures) {
-    console.error(\`- \${failure.file}: \${failure.import}\`);
-  }
+  for (const failure of failures) console.error('- ' + failure.file + ': ' + failure.import);
   process.exitCode = 1;
 } else {
-  console.log(\`Import check passed: \${sourceFiles.length} JavaScript files scanned.\`);
+  console.log('Import check passed: ' + sourceFiles.length + ' JavaScript files scanned.');
 }
