@@ -30,5 +30,5 @@ export function createSectionsPanel(root,s,onChange){
     root.querySelectorAll("[data-up],[data-down]").forEach(b=>b.onclick=()=>{const id=b.dataset.up??b.dataset.down,arr=s.sectionsUi.panelOrder??(s.sectionsUi.panelOrder=detectSections(s).panels.map(p=>p.id)),i=arr.indexOf(id),j=i+(b.dataset.up?-1:1);if(i<0||j<0||j>=arr.length)return;[arr[i],arr[j]]=[arr[j],arr[i]];render();});
     const scan=root.querySelector("[data-scan]");if(scan)scan.onclick=()=>{const result=completeSectionScan(s,selected);if(result.ok){report=result;onChange(result.message);}else onChange(result.message);render();};
   }
-  return{open(){open=true;render();},close(){open=false;render();},toggle(){open=!open;render();},refresh:render,get isOpen(){return open;}};
+  return{open(){open=true;render();},close(){open=false;render();},toggle(){open=!open;render();},selectPanel(id){selectPanel(id);open=true;render();},refresh:render,get isOpen(){return open;}};
 }
