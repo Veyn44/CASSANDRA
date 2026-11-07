@@ -30,7 +30,7 @@ src/
 - **core**: shared game state and configuration; avoid putting gameplay rules here.
 - **world**: deck definitions and selection, map geometry, section detection and world generation. The asteroid-cluster generator is already separated here; multi-deck and station-generation responsibilities remain future work.
 - **entities**: pawn, shuttle, placed objects and their identity/state. Keep entity data separate from presentation.
-- **systems**: deterministic gameplay rules. The current implementation separates hull connectivity, navigation, construction/damage/turn lifecycle, initial state creation and environmental updates. Power, life support, inventory and resource consumption remain future domains.
+- **systems**: deterministic gameplay rules. The current implementation separates hull connectivity, navigation, construction, damage handling, turn lifecycle, initial state creation and environmental updates. Power, life support, inventory and resource consumption remain future domains.
 - **rendering**: draw the current state; must not decide simulation outcomes.
 - **ui**: display state and send player commands; must not duplicate simulation rules.
 - **dev**: development-only panels, test controls, generators and the geometry-only ship JSON exporter.
