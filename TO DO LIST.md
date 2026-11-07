@@ -112,7 +112,7 @@ Phase 1 is not complete until all of the following have been checked together:
 - [ ] Active Tiles are all detected floor tiles in the section, from boundary to boundary or to an open/unbounded space.
 - [ ] Only floor tiles count toward capacity.
 - [ ] Walls, doors, and the panel itself do not count as Active Tiles.
-- [ ] Control Panel I initial capacity: **50 Active Tiles**.
+- [ ] Control Panel I initial capacity: **64 Active Tiles (8×8)**.
 - [ ] Show the count as ACTIVE TILES / CAPACITY, for example 10 / 50 or 110 / 50.
 - [ ] If capacity is exceeded, the panel still displays section information, but the section cannot become functional.
 - [ ] Do not require airtight walls or a fully enclosed room merely for a section to be detected.
@@ -167,7 +167,7 @@ Phase 1 is not complete until all of the following have been checked together:
 - [ ] Panel placement/orientation and adjacency rules work.
 - [ ] Section detection works for regular, irregular, open, split, and merged layouts.
 - [ ] Active Tiles count is correct and excludes walls/doors/panel.
-- [ ] Capacity enforcement works at and above 50 tiles.
+- [ ] Capacity enforcement works at and above 64 tiles.
 - [ ] One-panel-per-section rule is reliable.
 - [ ] Section overlay, selection, naming, and aggregate UI work.
 - [ ] Individual tile state is not exposed by hover-over.
@@ -393,7 +393,7 @@ These are the currently agreed design decisions. Do not silently change them dur
 - Airtight construction uses rarer/mixed materials and should be more expensive than ordinary aluminium construction.
 - External aluminium frame is outside the ship's Hull floor-tile capacity and can support external equipment such as solar panels and sensors.
 - Section Active Tiles count floor tiles only. Walls, doors, and the panel do not count.
-- Control Panel I capacity is currently 50 Active Tiles.
+- Control Panel I capacity is currently 64 Active Tiles (8×8).
 - One Control Panel per section. It must be directly adjacent to an Aluminium Wall and has a directional orientation.
 - A panel may be installed before the section is complete. It still reports detected section information, but an over-capacity or otherwise invalid section is nonfunctional.
 - Sections need not be airtight to be detected.
@@ -409,6 +409,24 @@ These are the currently agreed design decisions. Do not silently change them dur
 - Existing modules must be preserved as functional, placeholder, or locked content; do not delete them to simplify the new architecture.
 - DEV MODE remains available for instant spawn/build and destructive testing. JSON export remains in DEV TOOLS; normal gameplay does not use JSON to expand the ship.
 - User approval is required before every code modification. First state exact files and changes, then wait.
+
+## Latest accepted rules — 2026-11-07
+
+These rules were explicitly approved and are now the implementation target. They do not mark Phase 1 or Phase 2 complete; browser/gameplay verification is still required.
+
+- **Section capacity:** Control Panel I remains limited to 64 floor tiles (8×8). The Control Panel does not define or increase the ship-wide Hull tile capacity.
+- **Ship-wide capacity:** A separate ship Hull tile limit is still undecided and is intentionally deferred.
+- **Starting integrity:** Every construction tile and placed component in the New Game starting ship begins at 100% integrity. DEV/test damage values must not leak into the New Game starting state.
+- **Integrity floor:** Integrity of walls, doors, floor tiles, and components cannot degrade below 25%.
+- **NORMAL / STABLE:** 100–75% integrity. No leak.
+- **CAUTIOUS:** 74–50% integrity. The affected section loses exactly one pressure level on entry (for example OPTIMAL → LOW), not one level every turn. Temperature begins leaking. Aluminium components inside that section degrade by a random 2–10% per completed turn while it remains CAUTIOUS.
+- **CRITICAL:** 49–25% integrity. If any one boundary tile or boundary door in a section falls below 50%, the entire section changes to NONE / VACUUM (−270 °C) in that same NEXT TURN calculation. Integrity then stops at 25%.
+- **Locality:** Vacuum and aluminium degradation effects are confined to the affected section; intact boundaries prevent the effect from propagating into another section.
+- **Doors:** STR0002/STR0003 are Titanium Doors; STR0004/STR0005 are Aluminium Doors. Both seal against vacuum while closed and at 75% integrity or higher. Both use the same CAUTIOUS/CRITICAL integrity thresholds. An open door is an immediate open boundary.
+- **Door materials:** Titanium Doors use titanium; Aluminium Doors use aluminium. Door integrity is tracked as a component integrity value.
+- **Testing:** The initial ship geometry and JSON export remain unchanged. The next verification is New Game initialization and NEXT TURN behaviour on the completed Cassandra layout.
+
+---
 
 ## Current progress
 
