@@ -1,5 +1,5 @@
 import { validatePrefabPlacement, prefabSize, getBuildable } from '../systems/prefab-manager.js';
-import { isBlocked } from '../systems/turn-manager.js';
+import { isBlocked } from '../systems/navigation.js';
 import { isCellVisible } from '../systems/visibility-manager.js';
 const C = {
   bg: '#0a1119',
