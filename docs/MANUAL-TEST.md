@@ -34,6 +34,9 @@ The automated checks validate formatting, JavaScript syntax and relative import 
 - [ ] Confirm the Cassandra starting ship and its expected starting layout appear.
 - [ ] Open and close the build menu; switch categories and materials.
 - [ ] Toggle the grid and verify it redraws correctly.
+- [ ] Pan the camera with WASD and zoom with the mouse wheel.
+- [ ] Rotate a selected prefab with Q/E and verify the preview orientation changes.
+- [ ] Select the researcher and issue a right-click movement command; confirm the pawn follows a path and stops correctly.
 - [ ] Select a pawn or object and use the available interaction.
 - [ ] Open and close the sections panel.
 - [ ] Advance one or more turns and confirm the HUD/resources update as before.
@@ -53,6 +56,7 @@ The automated checks validate formatting, JavaScript syntax and relative import 
 
 - [ ] Repeat New Game after returning to the menu.
 - [ ] Confirm no duplicate event handling occurs after multiple sessions.
+- [ ] Confirm WASD camera movement and pawn movement stop after returning to the menu; start another session and verify they work exactly once.
 - [ ] Check the console for uncaught errors throughout.
 - [ ] Compare the starting ship layout and turn behavior against the pre-refactor baseline.
 
