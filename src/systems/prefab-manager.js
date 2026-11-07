@@ -75,6 +75,6 @@ export function placePrefab(s, id, x, y) {
   if (!check.valid) return { message: check.message };
   const idValue = "build-" + s.nextObjectId++;
   const built = Boolean(s.devCreator);
-  s.map.objects[idValue] = { id: idValue, type: item.id, family: item.id.slice(0, 3), x, y, w: check.w, h: check.h, rotation: s.rotation, built, materialFamily: item.defaultMaterialFamily ?? "titanium", ...(item.id === "MOD0014" ? { sectionName: "SECTION", integrity: 100 } : {}), ...(item.placement === "wall-opening" ? { wallAttachment: findDoorWallAttachment(s.map.tiles, x, y, check.w, check.h) } : {}) };
+  s.map.objects[idValue] = { id: idValue, type: item.id, family: item.id.slice(0, 3), x, y, w: check.w, h: check.h, rotation: s.rotation, built, materialFamily: item.defaultMaterialFamily ?? "titanium", integrity: 100, ...(item.id === "MOD0014" ? { sectionName: "SECTION" } : {}), ...(item.placement === "wall-opening" ? { wallAttachment: findDoorWallAttachment(s.map.tiles, x, y, check.w, check.h) } : {}) };
   return { message: built ? item.name + " BUILT · DEV CREATOR" : item.name + " BLUEPRINT PLACED · 1 TITANIUM · 1 AP", objectId: idValue };
 }
