@@ -29,7 +29,7 @@ function panelStatus(section,panels){
    status:!section?"INACTIVE":section.tileCount>64?"INACTIVE":i>0?"INACTIVE":section.critical?"INACTIVE":"ACTIVE",
    reason:!section?"NO SECTION":section.tileCount>64?"CAPACITY EXCEEDED":i>0?"DUPLICATE PANEL":section.critical?"SECTION LOCKED":""}));
 }
-export function detectSections(s){
+export function detectSections(s,{useSnapshot=true}={}){
  const tileToSection={},byId={},sections=[],seen=new Set();
  const floors=Object.entries(s.map.tiles).filter(([k,t])=>{const[x,y]=k.split(",").map(Number);return isFloor(s,x,y,t);});
  for(const[k]of floors){if(seen.has(k))continue;const[sx,sy]=k.split(",").map(Number),q=[{x:sx,y:sy}],tiles=[];seen.add(k);
@@ -43,7 +43,7 @@ export function detectSections(s){
   for(const p of section.tiles)for(const[dx,dy]of DIRS){const x=p.x+dx,y=p.y+dy,k=key(x,y);if(own.has(k))continue;
    const tile=s.map.tiles[k],door=doorAt(s,x,y);
    if(isWall(tile)){boundary.set(k,{x,y,tile,integrity:wallIntegrity(tile),kind:tile.aluminiumWall?"ALUMINIUM WALL":"TITANIUM WALL"});}
-   else if(isAirtightDoor(door)){if(door.locked)section.locked=true;}
+   else if(isAirtightDoor(door)){/* closed airtight door seals this edge */}
    else section.openBoundaries.push({x,y,door});
   }
   for(const item of boundary.values()){
@@ -64,9 +64,24 @@ export function detectSections(s){
   else if(section.precriticalWalls.length){section.atmosphere=active?"NOT OPTIMAL":"NONE";section.pressure=active?"LOW":"VACUUM";section.environment="PRECRITICAL";}
   else if(active){section.atmosphere="OPTIMAL";section.pressure="OPTIMAL";section.temperature=24;section.environment="HABITABLE";}
   else{section.atmosphere="NONE";section.pressure="VACUUM";section.temperature=null;section.environment="UNMANAGED";}
-  const saved=s.environmentState?.[signature(section.tiles)];
-  if(section.precriticalWalls.length&&Number.isFinite(saved?.temperature))section.temperature=saved.temperature;
+  const saved=useSnapshot?s.environmentState?.[signature(section.tiles)]:null;
+  if(saved){
+   section.airtightness=saved.airtightness??section.airtightness;
+   section.critical=saved.environment==="LOCKED";
+   section.locked=Boolean(saved.locked);
+   section.atmosphere=saved.atmosphere??section.atmosphere;
+   section.pressure=saved.pressure??section.pressure;
+   section.temperature=saved.temperature;
+   section.environment=saved.environment??section.environment;
+   section.precriticalWallCount=saved.precriticalWalls??section.precriticalWalls.length;
+   section.criticalWallCount=saved.criticalWalls??section.criticalWalls.length;
+   section.panels=panelStatus(section,bySectionPanels.get(section.id)??[]);
+  }else{
+   section.precriticalWallCount=section.precriticalWalls.length;
+   section.criticalWallCount=section.criticalWalls.length;
+  }
  }
+ result.panels=[...sections.flatMap(section=>section.panels),...(bySectionPanels.get(null)??[]).flatMap(panel=>panelStatus(null,[panel]))];
  return result;
 }
 function boundaryLeakCounts(s,data,section){
@@ -88,23 +103,27 @@ function closeSectionDoors(s,section){
   if(touches){door.closed=true;door.locked=true;}
  }
 }
+function unlockSectionDoors(s,section){
+ const cells=new Set(section.tiles.map(p=>key(p.x,p.y)));
+ for(const door of Object.values(s.map.objects)){if(!DOOR_TYPES.has(door.type)||door.built===false)continue;let touches=false;for(let y=door.y;y<door.y+door.h;y++)for(let x=door.x;x<door.x+door.w;x++)for(const[dx,dy]of DIRS)if(cells.has(key(x+dx,y+dy)))touches=true;if(touches)door.locked=false;}
+}
 export function advanceEnvironment(s){
  s.environmentState??={};
- const before=detectSections(s);
+ const before=detectSections(s,{useSnapshot:false});
  // Aluminium exposed to external or already-vacuumed sections degrades once per completed turn.
  for(const[k,tile]of Object.entries(s.map.tiles)){if(!tile?.aluminiumWall)continue;const[x,y]=k.split(",").map(Number);
   const exposed=DIRS.some(([dx,dy])=>{const nx=x+dx,ny=y+dy,nk=key(nx,ny);if(before.vacuumSet.has(nk))return true;const id=before.tileToSection[nk];return Boolean(id&&before.byId[id]?.pressure==="VACUUM");});
   if(exposed){const damage=2+Math.floor(Math.random()*9);tile.aluminiumWallIntegrity=Math.max(25,(tile.aluminiumWallIntegrity??100)-damage);}
  }
- const data=detectSections(s),nextState={};
+ const data=detectSections(s,{useSnapshot:false}),nextState={};
  for(const section of data.sections){const sig=signature(section.tiles),prior=s.environmentState[sig]??{},counts=boundaryLeakCounts(s,data,section);
   if(section.critical){section.atmosphere="NONE";section.pressure="VACUUM";section.temperature=-270;section.environment="LOCKED";section.locked=true;closeSectionDoors(s,section);}
   else if(section.precriticalWalls.length){section.atmosphere=section.hasActivePanel?"NOT OPTIMAL":"NONE";section.pressure=section.hasActivePanel?"LOW":"VACUUM";section.environment="PRECRITICAL";
    const base=Number.isFinite(prior.temperature)?prior.temperature:(section.hasActivePanel?24:null);
    section.temperature=base==null?null:Math.max(-270,base-29*counts.vacuumTiles-1.2*counts.internalTiles);
-  }else if(section.hasActivePanel){section.atmosphere="OPTIMAL";section.pressure="OPTIMAL";section.temperature=24;section.environment="HABITABLE";section.locked=false;}
+  }else if(section.hasActivePanel){section.atmosphere="OPTIMAL";section.pressure="OPTIMAL";section.temperature=24;section.environment="HABITABLE";section.locked=false;unlockSectionDoors(s,section);}
   else{section.atmosphere="NONE";section.pressure="VACUUM";section.temperature=null;section.environment="UNMANAGED";}
-  nextState[sig]={temperature:section.temperature,atmosphere:section.atmosphere,pressure:section.pressure,environment:section.environment,locked:section.locked};
+  nextState[sig]={temperature:section.temperature,atmosphere:section.atmosphere,pressure:section.pressure,environment:section.environment,locked:section.locked,airtightness:section.airtightness,precriticalWalls:section.precriticalWalls.length,criticalWalls:section.criticalWalls.length};
  }
  s.environmentState=nextState;
  s.environmentSnapshot={turn:s.turn,sections:data.sections.map(section=>({id:section.id,weight:section.tileCount,atmosphere:section.atmosphere,pressure:section.pressure,temperature:section.temperature,airtightness:section.airtightness,environment:section.environment}))};
