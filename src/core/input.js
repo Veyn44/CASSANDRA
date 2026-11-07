@@ -402,6 +402,6 @@ export function bindInput(canvas, s, r, refresh, cancel, note, onControlPanelCli
       r.draw();
     }
   });
-    bindCameraControls(s, r, listen, controller.signal);
+  bindCameraControls(s, r, listen, controller.signal);
   return () => controller.abort();
 }
