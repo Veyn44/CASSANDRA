@@ -1,6 +1,6 @@
 const base = { stats: {}, attributes: {}, requirements: {}, systems: {}, defaultMaterialFamily: "titanium" };
 
-export const ALUMINIUM_WALL = { id: "STR0006", legacyId: "aluminium-wall", name: "Aluminium Wall", category: "structure", subcategory: "internal-wall", type: "structure", w: 1, h: 1, description: "Thick structural aluminium wall. Integrity is tracked independently from the Hull.", function: "Internal structural wall", placement: "hull", integrityRange: [0, 100], defaultMaterialFamily: "aluminium" };
+export const ALUMINIUM_WALL = { id: "STR0006", legacyId: "aluminium-wall", name: "Aluminium Wall", category: "structure", subcategory: "internal-wall", type: "structure", w: 1, h: 1, description: "Thick structural aluminium wall. Integrity is tracked independently from the Hull.", function: "Internal structural wall", placement: "hull", integrityRange: [25, 100], defaultMaterialFamily: "aluminium" };
 
 export const STRUCTURES = [
   { ...base, id: "STR0001", legacyId: "external-frame", name: "External Frame", category: "structure", subcategory: "external-support", type: "structure", w: 1, h: 1, description: "Lightweight external mounting structure. Not a floor or wall.", function: "External equipment support", placement: "external-frame" },
