@@ -1,5 +1,5 @@
 import { updateSidebar } from './sidebar.js';
-import { connectedHullCount, shipHullTileCount } from '../systems/turn-manager.js';
+import { connectedHullCount, shipHullTileCount } from '../systems/hull-system.js';
 import { getBuildable } from '../systems/prefab-manager.js';
 
 const $ = (selector) => document.querySelector(selector);
