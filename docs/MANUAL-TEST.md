@@ -4,9 +4,11 @@ The automated checks validate formatting, JavaScript syntax and relative import 
 
 ## Start
 
-1. Open the project through a local HTTP server (ES modules should not be tested from a `file://` URL).
-2. Open the browser developer console and keep it visible.
-3. Load `index.html` and confirm the main menu appears without console errors.
+1. Open a terminal in the repository root (the folder containing `index.html`).
+2. On Windows, run `py -m http.server 8000`. If `py` is unavailable, try `python -m http.server 8000`.
+3. Open `http://localhost:8000` in your browser. Keep the terminal running; stop the server with `Ctrl+C` when finished.
+4. Open the browser developer console and keep it visible.
+5. Confirm the main menu appears without console errors. Do not open the page through a `file://` URL; the game uses JavaScript modules.
 
 ## Normal game
 
