@@ -25,6 +25,8 @@ The automated checks validate formatting, JavaScript syntax and relative import 
 - [ ] Start a normal New Game.
 - [ ] Confirm the Cassandra starting ship and its expected starting layout appear.
 - [ ] Open and close the build menu; switch categories and materials.
+- [ ] Place a hull plan, a wall plan and a prefab; verify the preview and resulting plans/objects appear at the selected coordinates.
+- [ ] Use the eraser to cancel a plan and mark an existing structure/module for demolition.
 - [ ] Toggle the grid and verify it redraws correctly.
 - [ ] Pan the camera with WASD and zoom with the mouse wheel.
 - [ ] Rotate a selected prefab with Q/E and verify the preview orientation changes.
