@@ -100,17 +100,40 @@ function boundaryLeakCounts(s,data,section){
  }
  return{vacuumTiles,internalTiles};
 }
+function isAluminiumDoor(object){return object?.type==="STR0004"||object?.type==="STR0005";}
+function degradeIntegrity(target){
+ const damage=2+Math.floor(Math.random()*9);
+ target.integrity=Math.max(25,(target.integrity??100)-damage);
+}
 function degradeAluminiumInsideSection(s,data,section){
  const floorKeys=new Set(section.tiles.map(p=>key(p.x,p.y)));
  for(const object of Object.values(s.map.objects)){
-  if(object.built===false||object.materialFamily!=="aluminium")continue;
+  if(object.built===false||object.materialFamily!=="aluminium"||DOOR_TYPES.has(object.type))continue;
   let inside=false;
   for(let y=object.y;y<object.y+object.h&&!inside;y++)for(let x=object.x;x<object.x+object.w;x++){
    if(floorKeys.has(key(x,y))){inside=true;break;}
   }
   if(!inside)continue;
-  const damage=2+Math.floor(Math.random()*9);
-  object.integrity=Math.max(25,(object.integrity??100)-damage);
+  degradeIntegrity(object);
+ }
+}
+function degradeExposedAluminium(s,data){
+ // Aluminium boundary walls and doors lose airtightness when they border LOW pressure or vacuum.
+ const affectedSections=new Set(data.sections.filter(section=>section.pressure==="LOW"||section.pressure==="VACUUM").map(section=>section.id));
+ const shouldDegradeAt=(x,y)=>DIRS.some(([dx,dy])=>{
+  const nx=x+dx,ny=y+dy;
+  return data.vacuumSet.has(key(nx,ny))||affectedSections.has(data.tileToSection[key(nx,ny)]);
+ });
+ for(const[position,tile]of Object.entries(s.map.tiles)){
+  if(!tile?.aluminiumWall)continue;
+  const[x,y]=position.split(",").map(Number);
+  if(shouldDegradeAt(x,y))degradeIntegrity({get integrity(){return tile.aluminiumWallIntegrity??100;},set integrity(value){tile.aluminiumWallIntegrity=value;}});
+ }
+ for(const door of Object.values(s.map.objects)){
+  if(!isAluminiumDoor(door)||door.built===false)continue;
+  let exposed=false;
+  for(let y=door.y;y<door.y+door.h&&!exposed;y++)for(let x=door.x;x<door.x+door.w&&!exposed;x++)exposed=shouldDegradeAt(x,y);
+  if(exposed)degradeIntegrity(door);
  }
 }
 function closeSectionDoors(s,section){
@@ -127,11 +150,8 @@ function unlockSectionDoors(s,section){
 export function advanceEnvironment(s,{initial=false}={}){
  s.environmentState??={};
  const before=detectSections(s,{useSnapshot:false});
- // Exterior aluminium walls erode only during completed turns, never during New Game initialization.
- if(!initial)for(const[k,tile]of Object.entries(s.map.tiles)){if(!tile?.aluminiumWall)continue;const[x,y]=k.split(",").map(Number);
-  const exposed=DIRS.some(([dx,dy])=>{const nx=x+dx,ny=y+dy,nk=key(nx,ny);if(before.vacuumSet.has(nk))return true;const id=before.tileToSection[nk];return Boolean(id&&before.byId[id]?.pressure==="VACUUM");});
-  if(exposed){const damage=2+Math.floor(Math.random()*9);tile.aluminiumWallIntegrity=Math.max(25,(tile.aluminiumWallIntegrity??100)-damage);}
- }
+ // Boundary aluminium loses airtightness against LOW pressure as well as vacuum.
+ if(!initial)degradeExposedAluminium(s,before);
  const data=detectSections(s,{useSnapshot:false}),nextState={};
  for(const section of data.sections){
   const sig=signature(section.tiles),prior=s.environmentState[sig]??{},counts=boundaryLeakCounts(s,data,section);
