@@ -4,7 +4,37 @@ import { getBuildable } from "./prefab-manager.js";
 import { generateCosmicBody } from "./cosmic-body-generator.js";
 import { createVisibility } from "./visibility-manager.js";
 import { advanceEnvironment } from "./section-manager.js";
-export function createInitialState({mode="normal"}={}){const tiles={};const baseHullRows={56:[67,68,69,70,71,72,73,74,75,76,77],57:[67,68,69,70,71,72,73,74,75,76,77],58:[67,68,69,70,71,72,73,74,75,76,77],59:[67,68,69,70,71,72,73,74,75,76,77],60:[60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77],61:[60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79],62:[60,61,62,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80],63:[60,61,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80],64:[60,61,62,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80],65:[60,61,62,63,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80],66:[60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79],67:[60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77],68:[67,68,69,70,71,72,73,74,75],69:[67,68,69,70,71,72,73,74,75],70:[67,68,69,70,71,72,73,74,75],71:[67,68,69,70,71,72,73,74,75]};const baseWallRows={56:[67,68,69,70,71,72,73,74,75,76,77],57:[67],58:[67,72,74,77],59:[67,72,74,77],60:[60,61,62,63,64,65,66,67,68,69,70,71,72,74,75,76,77],61:[60,67,72,77,78,79],62:[60,67,72,79,80],63:[60,80],64:[60,80],65:[60,67,72,79,80],66:[60,67,72,77,78,79],67:[60,61,62,63,64,65,66,67,68,69,70,71,72,74,75,76,77],68:[67,75],69:[67,75],70:[67,75],71:[67,68,69,70,71,72,73,74,75]};const baseWallSet=new Set(Object.entries(baseWallRows).flatMap(([y,xs])=>xs.map(x=>key(x,Number(y)))));for(const[y,xs]of Object.entries(baseHullRows))for(const x of xs){const k=key(x,Number(y));tiles[k]={hull:true,integrity:100,wall:baseWallSet.has(k),wallIntegrity:baseWallSet.has(k)?100:null,aluminiumWall:false,aluminiumWallIntegrity:null};}const gameConfig=createGameConfig(mode);const state={turn:1,day:1,gameConfig,controlNetwork:{central:{role:"BRIDGE_CONSOLE",scope:"ALL_SECTIONS",remoteAccessRequiresIntactIntegrityPath:true,integrityPathSimulation:"NOT_IMPLEMENTED"},local:{scope:"ONE_SECTION",worksIndependently:true}},devMode:gameConfig.unlimitedResources,resources:{titanium:100,water:20,ice:0,oxygen:100,hydrogen:20},activeTool:null,selectedPrefab:null,selectedObject:null,selectedMaterial:"titanium",devCreator:false,damageSimulator:{active:false},rotation:0,nextObjectId:2,hoverTile:null,map:{width:256,height:128,tileSize:28,gridVisible:true,tiles,plans:{},objects:{"module-1":{id:"module-1",type:"MOD0002",x:63,y:63,w:2,h:2,rotation:0,built:true}},core:{x:64,y:64},anchor:{x:192,y:64},asteroid:null,asteroidVisibility:null},pawn:{id:"researcher-01",name:"Researcher",x:66,y:64,level:1,maxOP:12,op:12,selected:true,health:100,moving:false},camera:{x:64,y:64,zoom:1},selection:"researcher-01"};advanceEnvironment(state);return state;}
+export function createInitialState({mode="normal"}={}){
+ const tiles={};
+ const hullRows={59:[75,76,77,78,79],60:[66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81],61:[66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83],62:[63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83],63:[63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83],64:[63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83],65:[63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83],66:[66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83],67:[66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81],68:[75,76,77,78,79]};
+ const hullWallRows={59:[75,76,77,78,79],60:[66,67,68,69,70,71,72,73,74,75,79,80,81],61:[66,81,82,83],62:[63,64,66,68,83],63:[83],64:[83],65:[63,64,66,67,68,83],66:[66,75,76,79,81,82,83],67:[66,67,68,69,70,71,72,73,74,75,79,80,81],68:[75,76,78,79]};
+ const aluminiumWallRows={60:[76,77,78],61:[67,68,69,70,71,72,73,74,75,76,78,79,80],62:[74,80,81,82],65:[74],66:[74,78]};
+ const positions=rows=>new Set(Object.entries(rows).flatMap(([y,xs])=>xs.map(x=>key(x,Number(y)))));
+ const hullSet=positions(hullRows),hullWallSet=positions(hullWallRows),aluminiumWallSet=positions(aluminiumWallRows);
+ for(const k of hullSet){
+  const isHullWall=hullWallSet.has(k),isAluminiumWall=aluminiumWallSet.has(k);
+  tiles[k]={hull:true,integrity:100,wall:isHullWall,wallIntegrity:isHullWall?100:null,aluminiumWall:isAluminiumWall,aluminiumWallIntegrity:isAluminiumWall?100:null};
+ }
+ const gameConfig=createGameConfig(mode);
+ const objects={
+  "build-16":{id:"build-16",type:"MOD0014",family:"MOD",x:67,y:62,w:1,h:1,rotation:0,built:true,materialFamily:"aluminium",sectionName:"SECTION"},
+  "build-19":{id:"build-19",type:"MOD0014",family:"MOD",x:73,y:62,w:1,h:1,rotation:0,built:true,materialFamily:"aluminium",sectionName:"SECTION"},
+  "build-20":{id:"build-20",type:"MOD0014",family:"MOD",x:75,y:62,w:1,h:1,rotation:0,built:true,materialFamily:"aluminium",sectionName:"SECTION"},
+  "build-2":{id:"build-2",type:"MOD0002",family:"MOD",x:63,y:63,w:2,h:2,rotation:0,built:true,materialFamily:"titanium"},
+  "build-3":{id:"build-3",type:"STR0003",family:"STR",x:66,y:63,w:1,h:2,rotation:3,built:true,materialFamily:"titanium"},
+  "build-14":{id:"build-14",type:"STR0003",family:"STR",x:68,y:63,w:1,h:2,rotation:3,built:true,materialFamily:"titanium"},
+  "build-9":{id:"build-9",type:"STR0005",family:"STR",x:74,y:63,w:1,h:2,rotation:3,built:true,materialFamily:"titanium"},
+  "build-7":{id:"build-7",type:"MOD0005",family:"MOD",x:81,y:63,w:2,h:2,rotation:0,built:true,materialFamily:"titanium"},
+  "build-15":{id:"build-15",type:"MOD0011",family:"MOD",x:81,y:65,w:2,h:1,rotation:0,built:true,materialFamily:"titanium"},
+  "build-11":{id:"build-11",type:"STR0002",family:"STR",x:77,y:66,w:1,h:1,rotation:0,built:true,materialFamily:"titanium"},
+  "build-13":{id:"build-13",type:"MOD0008",family:"MOD",x:76,y:67,w:1,h:1,rotation:0,built:true,materialFamily:"titanium"},
+  "build-12":{id:"build-12",type:"MOD0014",family:"MOD",x:78,y:67,w:1,h:1,rotation:0,built:true,materialFamily:"aluminium",sectionName:"SECTION"},
+  "build-10":{id:"build-10",type:"STR0002",family:"STR",x:77,y:68,w:1,h:1,rotation:0,built:true,materialFamily:"titanium"}
+ };
+ const state={turn:1,day:1,gameConfig,controlNetwork:{central:{role:"BRIDGE_CONSOLE",scope:"ALL_SECTIONS",remoteAccessRequiresIntactIntegrityPath:true,integrityPathSimulation:"NOT_IMPLEMENTED"},local:{scope:"ONE_SECTION",worksIndependently:true}},devMode:gameConfig.unlimitedResources,resources:{titanium:100,water:20,ice:0,oxygen:100,hydrogen:20},activeTool:null,selectedPrefab:null,selectedObject:null,selectedMaterial:"titanium",devCreator:false,damageSimulator:{active:false},rotation:0,nextObjectId:21,hoverTile:null,map:{width:256,height:128,tileSize:28,gridVisible:true,tiles,plans:{},objects,core:{x:64,y:64},anchor:{x:192,y:64},asteroid:null,asteroidVisibility:null},pawn:{id:"researcher-01",name:"Researcher",x:70,y:64,level:1,maxOP:12,op:12,selected:true,health:100,moving:false},camera:{x:73,y:64,zoom:1},selection:"researcher-01"};
+ advanceEnvironment(state);
+ return state;
+}
 export function connectedHullSet(s){const seen=new Set(),q=[],core=s.map.core,rx=core.x-1,ry=core.y-1;for(let x=rx-1;x<=rx+2;x++)for(const y of [ry-1,ry+2]){const k=key(x,y);if(s.map.tiles[k]?.hull&&!seen.has(k)){seen.add(k);q.push({x,y});}}for(let y=ry;y<ry+2;y++)for(const x of [rx-1,rx+2]){const k=key(x,y);if(s.map.tiles[k]?.hull&&!seen.has(k)){seen.add(k);q.push({x,y});}}for(let i=0;i<q.length;i++){const p=q[i];for(const[dx,dy]of dirs){const x=p.x+dx,y=p.y+dy,k=key(x,y),t=s.map.tiles[k];if(t?.hull&&!seen.has(k)){seen.add(k);q.push({x,y});}}}return seen;}
 export function connectedHullCount(s){return connectedHullSet(s).size;}
 export function shipHullTileCount(s){return Object.values(s.map.tiles).filter(tile=>tile?.hull).length;}
