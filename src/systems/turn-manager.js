@@ -33,7 +33,7 @@ export function createInitialState({mode="normal"}={}){
  };
  for(const object of Object.values(objects))object.integrity=100;
  const state={turn:1,day:1,gameConfig,controlNetwork:{central:{role:"BRIDGE_CONSOLE",scope:"ALL_SECTIONS",remoteAccessRequiresIntactIntegrityPath:true,integrityPathSimulation:"NOT_IMPLEMENTED"},local:{scope:"ONE_SECTION",worksIndependently:true}},devMode:gameConfig.unlimitedResources,resources:{titanium:100,water:20,ice:0,oxygen:100,hydrogen:20},activeTool:null,selectedPrefab:null,selectedObject:null,selectedMaterial:"titanium",devCreator:false,damageSimulator:{active:false},rotation:0,nextObjectId:21,hoverTile:null,map:{width:256,height:128,tileSize:28,gridVisible:true,tiles,plans:{},objects,core:{x:64,y:64},anchor:{x:192,y:64},asteroid:null,asteroidVisibility:null},pawn:{id:"researcher-01",name:"Researcher",x:70,y:64,level:1,maxOP:12,op:12,selected:true,health:100,moving:false},camera:{x:73,y:64,zoom:1},selection:"researcher-01"};
- advanceEnvironment(state);
+ advanceEnvironment(state,{initial:true});
  return state;
 }
 export function connectedHullSet(s){const seen=new Set(),q=[],core=s.map.core,rx=core.x-1,ry=core.y-1;for(let x=rx-1;x<=rx+2;x++)for(const y of [ry-1,ry+2]){const k=key(x,y);if(s.map.tiles[k]?.hull&&!seen.has(k)){seen.add(k);q.push({x,y});}}for(let y=ry;y<ry+2;y++)for(const x of [rx-1,rx+2]){const k=key(x,y);if(s.map.tiles[k]?.hull&&!seen.has(k)){seen.add(k);q.push({x,y});}}for(let i=0;i<q.length;i++){const p=q[i];for(const[dx,dy]of dirs){const x=p.x+dx,y=p.y+dy,k=key(x,y),t=s.map.tiles[k];if(t?.hull&&!seen.has(k)){seen.add(k);q.push({x,y});}}}return seen;}
