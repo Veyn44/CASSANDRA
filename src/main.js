@@ -73,7 +73,13 @@ function refresh() {
   $('#next-turn').classList.toggle('turn-pending', state.pawn.op > 0);
   gridBtn.textContent = state.map.gridVisible ? 'GRID: ON' : 'GRID: OFF';
   gridBtn.setAttribute('aria-pressed', String(state.map.gridVisible));
-  renderBuildCatalog(state, activeCategory, (category) => (activeCategory = category), refresh, noteText);
+  renderBuildCatalog(
+    state,
+    activeCategory,
+    (category) => (activeCategory = category),
+    refresh,
+    noteText
+  );
 }
 function cancelTool() {
   state.activeTool = null;
