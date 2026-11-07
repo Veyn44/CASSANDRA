@@ -1,10 +1,7 @@
-import { createSectionsPanel } from './ui/sections-panel.js';
-import { createInitialState, endTurn } from './systems/turn-manager.js';
-import { createRenderer } from './core/renderer.js';
-import { bindInput } from './core/input.js';
+import { endTurn } from './systems/turn-manager.js';
 import { renderBuildCatalog } from './ui/build-catalog.js';
 import { renderHud } from './ui/hud.js';
-import { bindDevPanel } from './ui/dev-panel.js';
+import { startGameSession } from './app/session.js';
 import { exportShipLayout as exportShipLayoutFile } from './dev/ship-layout-exporter.js';
 const $ = (selector) => document.querySelector(selector);
 const menu = $('#main-menu'),
@@ -64,32 +61,8 @@ function exportShipLayout() {
 }
 
 function start(mode = 'normal') {
-  dev = mode === 'dev';
-  state = createInitialState({ mode });
-  state.paused = false;
-  renderer = createRenderer(canvas, state);
-  bindInput(canvas, state, renderer, refresh, cancelTool, noteText, (panel) =>
-    sectionsPanel?.selectPanel(panel.id)
-  );
-  devPanel = dev ? bindDevPanel(state, refresh, noteText) : null;
-  sectionsPanel = createSectionsPanel($('#sections-panel'), state, (message) => {
-    noteText(message);
-    refresh();
-  });
-  devWrap.hidden = !dev;
-  devIndicator.hidden = !dev;
-  devToolsMenu.hidden = true;
-  astPanel.hidden = true;
-  $('#dev-creator-toggle').textContent = 'DEV CREATOR';
-  $('#damage-simulator-toggle').textContent = 'DAMAGE SIMULATOR: OFF';
-  pauseMenu.hidden = true;
-  leaveConfirm.hidden = true;
-  menu.hidden = true;
-  shell.hidden = false;
-  requestAnimationFrame(() => {
-    renderer.resize();
-    refresh();
-  });
+  const session = startGameSession(mode, { $, canvas, refresh, noteText });
+  ({ dev, state, renderer, devPanel, sectionsPanel } = session);
 }
 function pause() {
   if (!state || shell.hidden) return;
