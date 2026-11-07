@@ -5,6 +5,7 @@ export function createSessionLifecycle({
   setRenderer,
   setDevPanel,
   setSectionsPanel,
+  getSectionsPanel,
 }) {
   function pause() {
     const state = getState();
@@ -42,18 +43,5 @@ export function createSessionLifecycle({
     setSectionsPanel(null);
   }
 
-  function getSectionsPanel() {
-    return getCurrentSectionsPanel();
-  }
-
-  let getCurrentSectionsPanel = () => null;
-  return {
-    pause,
-    resume,
-    askLeave,
-    returnToMenu,
-    setSectionsPanelGetter(getter) {
-      getCurrentSectionsPanel = getter;
-    },
-  };
+  return { pause, resume, askLeave, returnToMenu };
 }
