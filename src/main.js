@@ -5,6 +5,7 @@ import { bindMenuControls } from './ui/menu-controls.js';
 import { startGameSession } from './app/session.js';
 import { createSessionLifecycle } from './app/session-lifecycle.js';
 import { exportShipLayout as exportShipLayoutFile } from './dev/ship-layout-exporter.js';
+import { bindDevControls } from './dev/dev-controls.js';
 const $ = (selector) => document.querySelector(selector);
 const shell = $('#game-shell'),
   options = $('#options-panel'),
@@ -67,42 +68,15 @@ $('#sections-toggle').onclick = () => {
   if (!state || state.paused) return;
   sectionsPanel?.toggle();
 };
-$('#dev-tools-button').onclick = () => {
-  devToolsMenu.hidden = !devToolsMenu.hidden;
-  $('#dev-tools-button').setAttribute('aria-expanded', String(!devToolsMenu.hidden));
-};
-$('#open-ast-gen').onclick = () => {
-  devToolsMenu.hidden = true;
-  devPanel?.open();
-};
-$('#close-ast-gen').onclick = () => devPanel?.close();
-$('#dev-export-ship-layout').onclick = () => {
-  devToolsMenu.hidden = true;
-  exportShipLayout();
-};
-$('#dev-creator-toggle').onclick = () => {
-  if (!dev || !state) return;
-  state.devCreator = !state.devCreator;
-  $('#dev-creator-toggle').textContent = state.devCreator ? 'DEV CREATOR: ON' : 'DEV CREATOR';
-  noteText(
-    state.devCreator
-      ? 'DEV CREATOR ENABLED · ITEMS ARE BUILT IMMEDIATELY'
-      : 'DEV CREATOR DISABLED · BLUEPRINT CONSTRUCTION'
-  );
-  refresh();
-};
-$('#damage-simulator-toggle').onclick = () => {
-  if (!dev || !state) return;
-  state.damageSimulator.active = !state.damageSimulator.active;
-  $('#damage-simulator-toggle').textContent =
-    'DAMAGE SIMULATOR: ' + (state.damageSimulator.active ? 'ON' : 'OFF');
-  noteText(
-    state.damageSimulator.active
-      ? 'DAMAGE SIMULATOR ACTIVE · CLICK A HULL / WALL / DOOR TO APPLY 1–25% DAMAGE'
-      : 'DAMAGE SIMULATOR DISABLED'
-  );
-  refresh();
-};
+bindDevControls({
+  $,
+  isDev: () => dev,
+  getState: () => state,
+  getDevPanel: () => devPanel,
+  noteText,
+  refresh,
+  exportShipLayout,
+});
 
 buildBtn.onclick = () => {
   categories.hidden = !categories.hidden;
