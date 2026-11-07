@@ -1,4 +1,4 @@
-import { readdir, access } from 'node:fs/promises';
+import { readdir, readFile, access } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -26,8 +26,8 @@ await collect(root);
 const failures = [];
 
 for (const filePath of sourceFiles) {
-  const source = await (await import('node:fs/promises')).readFile(filePath, 'utf8');
-  const specifiers = [...source.matchAll(/(?:\\bfrom\\s*|\\bimport\\s*)['"]([^'"]+)['"]/g)];
+  const source = await readFile(filePath, 'utf8');
+  const specifiers = [...source.matchAll(/(?:\bfrom\s*|\bimport\s*)['"]([^'"]+)['"]/g)];
 
   for (const [, specifier] of specifiers) {
     if (!specifier.startsWith('.')) continue;
@@ -35,7 +35,7 @@ for (const filePath of sourceFiles) {
     const target = path.resolve(path.dirname(filePath), specifier);
     const candidates = path.extname(target)
       ? [target]
-      : [target, `${target}.js`, path.join(target, 'index.js')];
+      : [target, \`\${target}.js\`, path.join(target, 'index.js')];
 
     if (!(await Promise.all(candidates.map(exists))).some(Boolean)) {
       failures.push({ file: path.relative(root, filePath), import: specifier });
@@ -46,9 +46,9 @@ for (const filePath of sourceFiles) {
 if (failures.length) {
   console.error('Unresolved relative imports:');
   for (const failure of failures) {
-    console.error(`- ${failure.file}: ${failure.import}`);
+    console.error(\`- \${failure.file}: \${failure.import}\`);
   }
   process.exitCode = 1;
 } else {
-  console.log(`Import check passed: ${sourceFiles.length} JavaScript files scanned.`);
+  console.log(\`Import check passed: \${sourceFiles.length} JavaScript files scanned.\`);
 }
