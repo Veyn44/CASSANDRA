@@ -11,7 +11,8 @@ export const MODULES = [
   { ...base, id: "MOD0010", legacyId: "material-separator", name: "Material Separator", category: "material-processing", subcategory: "processing", type: "module", w: 2, h: 1, description: "Classifies mixed incoming material into storage categories.", function: "Material separation", placement: "hull" },
   { ...base, id: "MOD0011", legacyId: "life-support-panel", name: "Life Support Panel", category: "core-systems", subcategory: "life-support", type: "module", w: 2, h: 1, description: "Life-support system control interface.", function: "Life support control", placement: "hull" },
   { ...base, id: "MOD0012", legacyId: "battery-storage", name: "Battery Storage", category: "power", subcategory: "storage", type: "module", w: 2, h: 2, description: "High-capacity electrical energy storage.", function: "Electrical energy storage", placement: "hull" },
-  { ...base, id: "MOD0013", legacyId: "anchor-module", name: "Anchor Module", category: "core-systems", subcategory: "anchoring", type: "module", w: 2, h: 2, description: "Ship anchoring and tethered cargo transport interface.", function: "Ship anchoring · cargo tether", placement: "hull" }
+  { ...base, id: "MOD0013", legacyId: "anchor-module", name: "Anchor Module", category: "core-systems", subcategory: "anchoring", type: "module", w: 2, h: 2, description: "Ship anchoring and tethered cargo transport interface.", function: "Ship anchoring · cargo tether", placement: "hull" },
+  { ...base, id: "MOD0014", legacyId: "control-panel-i", name: "Control Panel I", category: "core-systems", subcategory: "section-control", type: "module", w: 1, h: 1, description: "Local section identification and environmental control interface.", function: "Section detection · local control", placement: "control-panel", defaultMaterialFamily: "aluminium" }
 ];
 
 export const MODULE_BY_ID = Object.freeze(Object.fromEntries(MODULES.map(item => [item.id, item])));
