@@ -5,6 +5,7 @@ import {
   applyDamageAt,
 } from '../systems/turn-manager.js';
 import { findPath, findWorkPath, isBlocked } from '../systems/navigation.js';
+import { bindCameraControls } from './camera-controls.js';
 const key = (x, y) => x + ',' + y;
 export function bindInput(canvas, s, r, refresh, cancel, note, onControlPanelClick) {
   const controller = new AbortController();
@@ -392,51 +393,6 @@ export function bindInput(canvas, s, r, refresh, cancel, note, onControlPanelCli
     },
     { passive: false }
   );
-  const heldKeys = new Set();
-  let lastFrame = 0;
-  function cameraFrame(ts) {
-    if (controller.signal.aborted) return;
-    const dt = lastFrame ? Math.min((ts - lastFrame) / 1000, 0.05) : 0;
-    lastFrame = ts;
-    const speed = (8 * dt) / Math.max(0.55, s.camera.zoom);
-    let moved = false;
-    if (heldKeys.has('w')) {
-      s.camera.y -= speed;
-      moved = true;
-    }
-    if (heldKeys.has('s')) {
-      s.camera.y += speed;
-      moved = true;
-    }
-    if (heldKeys.has('a')) {
-      s.camera.x -= speed;
-      moved = true;
-    }
-    if (heldKeys.has('d')) {
-      s.camera.x += speed;
-      moved = true;
-    }
-    if (moved && !s.paused) {
-      s.camera.x = Math.max(0, Math.min(255, s.camera.x));
-      s.camera.y = Math.max(0, Math.min(127, s.camera.y));
-      r.draw();
-    }
-    requestAnimationFrame(cameraFrame);
-  }
-  requestAnimationFrame(cameraFrame);
-  listen(window, 'keydown', (e) => {
-    if (s.paused) return;
-    const k = e.key.toLowerCase();
-    if ((k === 'q' || k === 'e') && s.activeTool === 'prefab') {
-      e.preventDefault();
-      s.rotation = (s.rotation + (k === 'q' ? 3 : 1)) % 4;
-      r.draw();
-      return;
-    }
-    if (!'wasd'.includes(k) || e.target instanceof HTMLInputElement) return;
-    e.preventDefault();
-    heldKeys.add(k);
-  });
-  listen(window, 'keyup', (e) => heldKeys.delete(e.key.toLowerCase()));
+  bindCameraControls(s, r, listen, controller.signal);
   return () => controller.abort();
 }
