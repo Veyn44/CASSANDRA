@@ -18,7 +18,6 @@ If Pages is already configured for another branch, do not replace that setting w
 3. Open `http://localhost:8000` in your browser. Keep the terminal running; stop the server with `Ctrl+C` when finished.
 4. Do not open the page through a `file://` URL; the game uses JavaScript modules.
 
-
 The automated checks validate formatting, JavaScript syntax and relative import paths. They do not execute the game or verify its visual behavior. Complete this checklist in a browser before treating the refactor as runtime-verified.
 
 ## Start
