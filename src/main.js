@@ -47,9 +47,9 @@ function exportShipLayout(){
   version:2,
   map:{width:state.map.width,height:state.map.height},
   construction:{hullFloor,hullWalls,aluminiumWalls},
-  objects
+  objects:objects
  };
- const blob=new Blob([JSON.stringify(layout,null,2)+"\\n"],{type:"application/json"});
+ const blob=new Blob([JSON.stringify(layout,null,2)],{type:"application/json"});
  const url=URL.createObjectURL(blob);
  const link=document.createElement("a");
  link.href=url;
