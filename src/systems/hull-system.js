@@ -1,5 +1,10 @@
 const key = (x, y) => x + ',' + y;
-const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+const dirs = [
+  [1, 0],
+  [-1, 0],
+  [0, 1],
+  [0, -1],
+];
 export function connectedHullSet(s) {
   const seen = new Set(),
     q = [],

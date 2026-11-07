@@ -149,4 +149,3 @@ export function endTurn(s) {
   s.pawn.op = s.pawn.maxOP;
   return { message: 'TURN ADVANCED · ENVIRONMENT UPDATED · OPERATIONAL POINTS RESTORED' };
 }
-
